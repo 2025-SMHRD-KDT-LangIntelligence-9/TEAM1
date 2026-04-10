@@ -5,6 +5,7 @@ from transformers import BertModel
 from database import SessionLocal
 from models import Embeddings
 import torch
+from models import Embeddings, Correction
 
 # KoBERT 모델 로드
 tokenizer = get_tokenizer()
@@ -74,5 +75,29 @@ def search_similar(text: str, limit: int = 3):
 
         return similar_texts, context_type
 
+    finally:
+        db.close()
+
+def search_history(text: str, user_id: int, limit: int = 3):
+    """사용자의 이전 교정 히스토리에서 유사한 텍스트 검색"""
+    vector = get_vector(text)
+
+    db = SessionLocal()
+    try:
+        results = db.query(Correction).filter(
+            Correction.id == user_id,
+            Correction.upload_vector != None
+        ).order_by(
+            Correction.upload_vector.l2_distance(vector)
+        ).limit(limit).all()
+
+        return [
+            {
+                "original_text": r.upload_text,
+                "corr_text": r.corr_text,
+                "context_type": r.tone_type
+            }
+            for r in results
+        ]
     finally:
         db.close()

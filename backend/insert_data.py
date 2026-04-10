@@ -27,7 +27,7 @@ def get_vector(text: str) -> list:
 
 # 데이터 로드
 print("데이터 로딩 중...")
-df = pd.read_excel(r'C:\Users\smhrd\Desktop\backend\data\merged_data_4class.xlsx')
+df = pd.read_excel(r'C:\Users\smhrd\Desktop\backend\data\데이터파일.xlsx')
 print(f"총 데이터 수: {len(df)}개")
 print(f"맥락별 데이터:\n{df['context_type'].value_counts()}\n")
 

@@ -31,11 +31,11 @@ def get_vector(text: str) -> list:
 
 # 데이터 로드
 print("데이터 로딩 중...")
-df = pd.read_excel(r'C:\Users\smhrd\Desktop\backend\data\merged_data_4class.xlsx')
+df = pd.read_excel(r'C:\Users\smhrd\Desktop\backend\data\데이터파일_정제__1_ (1).xlsx')
 print(f"원본 데이터 수: {len(df)}개")
 
 # original_text + corr_text 각각 따로 행으로 만들기
-# original_text 978개 + corr_text 978개 = 1956개
+# original_text + corr_text
 texts = []
 labels = []
 

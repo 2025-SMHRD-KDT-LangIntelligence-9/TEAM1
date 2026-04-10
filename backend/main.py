@@ -8,8 +8,38 @@ from jose import jwt
 from datetime import datetime, timedelta
 from embedding import search_similar
 from LLM import generate_correction
+from fastapi.middleware.cors import CORSMiddleware
+from jose import JWTError
+from fastapi.security import OAuth2PasswordBearer
+from embedding import get_vector
+from schemas import UserCreate, UserLogin, TextAnalyze, CorrectionCreate, SaveCorrection
+from embedding import search_similar, search_history
+from schemas import UserCreate, UserLogin, TextAnalyze, CorrectionCreate, SaveCorrection, UserUpdate
+
+
+
 
 app = FastAPI()
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+
+def get_current_user(token: str = Depends(oauth2_scheme)):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("user_id")
+        if user_id is None:
+            raise HTTPException(status_code=401, detail="토큰이 유효하지 않습니다")
+        return user_id
+    except JWTError:
+        raise HTTPException(status_code=401, detail="토큰이 유효하지 않습니다")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 Base.metadata.create_all(bind=engine)
 
@@ -19,7 +49,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 # JWT 설정
 SECRET_KEY = "toneguard_secret_key"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 
 def hash_password(password: str):
     return pwd_context.hash(password)
@@ -50,8 +80,15 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     existing_user = db.query(User).filter(User.email == user.email).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="이미 사용 중인 이메일입니다")
-    hashed_pw = hash_password(user.password)
-    new_user = User(email=user.email, password=hashed_pw, name=user.name)
+    new_user = User(
+        email=user.email,
+        pwd=user.password,
+        name=user.name,
+        nick=user.nick,
+        dept=user.dept,
+        job=user.job,
+        profile_img=''
+    )
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -63,29 +100,43 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
     db_user = db.query(User).filter(User.email == user.email).first()
     if not db_user:
         raise HTTPException(status_code=400, detail="이메일 또는 비밀번호가 틀렸습니다")
-    if not verify_password(user.password, db_user.password):
+    if db_user.pwd != user.password:
         raise HTTPException(status_code=400, detail="이메일 또는 비밀번호가 틀렸습니다")
     token = create_token({"sub": db_user.email, "user_id": db_user.id})
     return {"access_token": token, "token_type": "bearer", "user_id": db_user.id}
 
-# 텍스트 분석
-@app.post("/analyze")
-def analyze(request: TextAnalyze, db: Session = Depends(get_db)):
+@app.post("/save")
+def save(request: SaveCorrection, db: Session = Depends(get_db), user_id: int = Depends(get_current_user)):
     try:
-        # 1. 맥락 예측 + 유사 텍스트 검색
-        similar_texts, context_type = search_similar(request.text)
-
-        # 2. Ollama로 교정 문장 생성
-        result = generate_correction(request.text, similar_texts, context_type)
-
-        # 3. DB에 교정 기록 저장
+        from embedding import get_vector
         correction = Correction(
-            upload_text=request.text,
-            corr_text=result.get('polite', ''),
-            tone_type=context_type
+            id=user_id,
+            upload_text=request.upload_text,
+            upload_vector=get_vector(request.upload_text),
+            corr_text=request.corr_text,
+            tone_type=request.tone_type
         )
         db.add(correction)
         db.commit()
+        return {"message": "저장 완료!"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/analyze")
+def analyze(request: TextAnalyze, db: Session = Depends(get_db), user_id: int = Depends(get_current_user)):
+    try:
+        print(f"📩 수신 텍스트: {request.text}")
+
+        # 1. 맥락 예측 + 유사 텍스트 검색
+        similar_texts, context_type = search_similar(request.text)
+
+        # 2. 히스토리 검색  ← 이게 빠진 거야!
+        history = search_history(request.text, user_id)
+
+        # 3. Ollama로 교정 문장 생성
+        result = generate_correction(request.text, similar_texts, context_type, history)
+
+        print(f"✅ 교정 결과: {result}")
 
         return {
             "original": request.text,
@@ -96,6 +147,45 @@ def analyze(request: TextAnalyze, db: Session = Depends(get_db)):
                 "firm": result.get('firm', '')
             }
         }
+
+    except Exception as e:
+        print(f"❌ 에러: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.put("/user")
+def update_user(request: UserUpdate, db: Session = Depends(get_db), user_id: int = Depends(get_current_user)):
+    try:
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다")
+
+        if request.name: user.name = request.name
+        if request.nick: user.nick = request.nick
+        if request.dept: user.dept = request.dept
+        if request.job: user.job = request.job
+
+        db.commit()
+        return {"message": "개인정보 수정 완료!"}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete("/user")
+def delete_user(db: Session = Depends(get_db), user_id: int = Depends(get_current_user)):
+    try:
+        # 교정 기록 먼저 삭제
+        db.query(Correction).filter(Correction.id == user_id).delete()
+        
+        # 사용자 삭제
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다")
+        
+        db.delete(user)
+        db.commit()
+        return {"message": "회원 탈퇴 완료!"}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

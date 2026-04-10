@@ -5,13 +5,16 @@ from datetime import datetime
 # 회원가입 요청
 class UserCreate(BaseModel):
     email: str
-    password: str
+    password: str  # pwd → password
     name: str
+    nick: Optional[str] = None
+    dept: Optional[str] = None
+    job: Optional[str] = None
 
 # 로그인 요청
 class UserLogin(BaseModel):
     email: str
-    password: str
+    password: str  # pwd → password
 
 # 사용자 응답
 class UserResponse(BaseModel):
@@ -55,3 +58,15 @@ class CorrectionHistory(BaseModel):
 
     class Config:
         from_attributes = True
+
+class SaveCorrection(BaseModel):
+    upload_text: str
+    corr_text: str
+    tone_type: str
+    selected_tone: str  # polite / friendly / firm
+
+class UserUpdate(BaseModel):
+    name: Optional[str] = None
+    nick: Optional[str] = None
+    dept: Optional[str] = None
+    job: Optional[str] = None

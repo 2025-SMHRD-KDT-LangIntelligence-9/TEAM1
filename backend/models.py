@@ -8,9 +8,13 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String(100), unique=True, nullable=False)
-    password = Column(String(255), nullable=False)
+    pwd = Column(String(255), nullable=False)
     name = Column(String(50), nullable=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    nick = Column(String(50))
+    dept = Column(String(50))
+    job = Column(String(50))
+    profile_img = Column(String(255))
+    joined_at = Column(DateTime(timezone=True), server_default=func.now())
 
 class Correction(Base):
     __tablename__ = "corrections"
@@ -18,6 +22,7 @@ class Correction(Base):
     corr_idx = Column(Integer, primary_key=True, index=True)
     id = Column(Integer)
     upload_text = Column(Text)
+    upload_vector = Column(Vector(768))
     corr_text = Column(Text)
     aggression_score = Column(Integer, default=0, server_default='0')
     emotion_score = Column(Integer, default=0, server_default='0')
