@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToneGuard 로그인 & 회원가입</title>
+    
+    <style>
+        /* 기본 배경 및 폰트 설정 */
+        /* display: flex를 사용해 화면 중앙에 로그인 카드가 오도록 정렬합니다. */
+        body { 
+            font-family: '맑은 고딕', sans-serif; 
+            background: #F4F7FA; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; /* 화면 전체 높이를 차지하도록 설정 */
+            margin: 0; 
+        }
+        
+        /* 메인 하얀색 카드 (둥근 테두리와 은은한 그림자 효과) */
+        .card-box { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 20px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            width: 380px; 
+            text-align: center; 
+            border: 1px solid #E2E8F0; 
+        }
+        
+        /* 폼 입력창 그룹 스타일 */
+        .input-group { margin-bottom: 15px; text-align: left; }
+        
+        /* 입력창 위의 작은 제목 라벨 스타일 */
+        .input-group label { display: block; font-size: 12px; color: #64748B; margin-bottom: 5px; font-weight: bold; }
+        
+        /* 텍스트 입력창 기본 스타일 */
+        input { 
+            width: 100%; 
+            padding: 12px 15px; 
+            border: 1px solid #CBD5E1; 
+            border-radius: 10px; 
+            box-sizing: border-box; /* 패딩을 포함해 너비를 100%로 맞춤 */
+            font-size: 14px; 
+            background: #F8FAFC; 
+        }
+        
+        /* 입력창을 클릭(포커스)했을 때 파란색 테두리로 변하는 효과 */
+        input:focus { outline: none; border-color: #3B82F6; background: white; }
+
+        /* [버튼 스타일 모음] */
+        /* 파란색 기본 버튼 (로그인 등) */
+        .btn-primary { width: 100%; padding: 14px; background: #3B82F6; color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+        .btn-primary:hover { background: #2563EB; } /* 마우스 올렸을 때 살짝 어두워짐 */
+        
+        /* 초록색 성공 버튼 (회원가입 등) */
+        .btn-success { background: #10B981; }
+        .btn-success:hover { background: #059669; }
+
+        /* 텍스트만 있는 투명 버튼 (화면 전환용) */
+        .btn-text { background: transparent; color: #64748B; border: none; font-size: 13px; margin-top: 15px; cursor: pointer; text-decoration: underline; }
+        .btn-text:hover { color: #1E293B; }
+
+        /* 구글 로그인 전용 버튼 스타일 */
+        .btn-google { width: 100%; padding: 12px; background: white; color: #475569; border: 1px solid #CBD5E1; border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 10px; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn-google:hover { background: #F1F5F9; }
+
+        /* '또는' 글자 양옆에 가로선(구분선)을 그어주는 디자인 기법 */
+        .divider { display: flex; align-items: center; text-align: center; margin: 20px 0; color: #94A3B8; font-size: 12px; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #E2E8F0; }
+        .divider:not(:empty)::before { margin-right: .25em; }
+        .divider:not(:empty)::after { margin-left: .25em; }
+
+        /* 페이지에 처음 접속했을 때는 회원가입 창을 안 보이게 숨겨둡니다. */
+        #register-box { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="card-box" id="login-box">
+        <h2 style="color: #3B82F6; margin-bottom: 5px;">ToneGuard</h2>
+        <p style="color: #64748B; font-size: 14px; margin-bottom: 30px;">환영합니다! 서비스를 시작하세요.</p>
+        
+        <form action="/login_process" method="post">
+            <div class="input-group">
+                <input type="email" name="email" placeholder="Email" required>
+            </div>
+            <div class="input-group">
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+            <button type="submit" class="btn-primary">Sign In</button>
+        </form>
+        
+        <button type="button" class="btn-text" onclick="toggleView('register')">회원가입 하기</button>
+    </div>
+
+    <div class="card-box" id="register-box">
+        <h2 style="color: #3B82F6; margin-bottom: 20px;">Create Account</h2>
+        
+        <form action="/register_process" method="post">
+            <div class="input-group">
+                <label>이메일 (*)</label>
+                <input type="email" name="email" placeholder="user@email.com" required>
+            </div>
+            <div class="input-group">
+                <label>비밀번호 (*)</label>
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+            <div class="input-group">
+                <label>이름 또는 닉네임 (*)</label>
+                <input type="text" name="name" placeholder="Name or Nickname" required>
+            </div>
+            
+            <div class="input-group">
+                <label>소속 (선택)</label>
+                <input type="text" name="dept" placeholder="Department">
+            </div>
+            <div class="input-group">
+                <label>직무 (선택)</label>
+                <input type="text" name="job" placeholder="Job Title">
+            </div>
+
+            <button type="submit" class="btn-primary btn-success">Sign Up</button>
+        </form>
+
+        <div class="divider">또는</div>
+        
+        <button type="button" class="btn-google" onclick="alert('구글 로그인 준비 중입니다.')">
+            <span style="font-size: 16px;">G</span> Google 계정으로 계속하기
+        </button>
+
+        <button type="button" class="btn-text" onclick="toggleView('login')">로그인 화면으로 돌아가기</button>
+    </div>
+
+    <script>
+        // 로그인 창과 회원가입 창을 서로 교체해서 보여주는 함수입니다.
+        function toggleView(target) {
+            // 버튼에서 'register'라는 신호를 보냈다면
+            if (target === 'register') {
+                // 로그인 상자는 숨기고(none), 회원가입 상자는 보여줍니다(block).
+                document.getElementById('login-box').style.display = 'none';
+                document.getElementById('register-box').style.display = 'block';
+            } else {
+                // 반대의 경우, 회원가입 상자를 숨기고 로그인 상자를 보여줍니다.
+                document.getElementById('register-box').style.display = 'none';
+                document.getElementById('login-box').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

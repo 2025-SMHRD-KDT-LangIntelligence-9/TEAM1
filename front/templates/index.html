@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>ToneGuard AI Scanner</title>
+    
+    <style>
+        /* [1] 기본 스타일 및 폰트 설정 */
+        /* 모든 요소의 여백을 0으로 초기화하고, 테두리를 크기에 포함시키는 기본 세팅 */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: "맑은 고딕", "Malgun Gothic", sans-serif;
+            background: #F4F7FA; /* 눈이 편안한 부드러운 쿨그레이 배경 */
+            color: #2C3E50;      /* 텍스트 기본 색상 (다크 네이비) */
+            display: flex;       /* 요소를 블록처럼 배치하기 위해 Flexbox 사용 */
+            flex-direction: column; /* 요소를 위에서 아래로(세로 방향) 배치 */
+            min-height: 100vh;   /* 브라우저 화면 높이를 100% 꽉 채우도록 설정 */
+        }
+
+        /* [2] 상단 헤더 (로고 및 우측 메뉴) */
+        header {
+            background: #FFFFFF; /* 하얀색 배경 */
+            padding: 10px 60px;  /* 위아래 10px, 양옆 60px 여백 */
+            display: flex;
+            justify-content: space-between; /* 로고는 왼쪽 끝, 메뉴는 오른쪽 끝으로 양극단 배치 */
+            align-items: center;            /* 세로 기준 중앙 정렬 */
+            border-bottom: 1px solid #E2E8F0; /* 헤더 아래에 옅은 회색 선 추가 */
+        }
+        .logo-area img {
+            height: 60px;        /* 로고 높이 고정 */
+            width: auto;         /* 비율에 맞춰 너비 자동 조절 */
+            object-fit: contain; /* 이미지가 잘리지 않게 틀 안에 맞춤 */
+        }
+
+        /* 헤더 우측 메뉴들을 묶어주는 컨테이너 */
+        .header-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* 메뉴 버튼들 사이의 간격을 20px로 설정 */
+        }
+
+        /* 로그인 버튼 디자인 (파란색 바탕) */
+        .btn-login {
+            background: #3B82F6; color: white;
+            padding: 10px 25px; border-radius: 10px;
+            text-decoration: none; font-weight: bold; font-size: 14px;
+            transition: background 0.2s; /* 마우스 올릴 때 0.2초 동안 부드럽게 색상 변환 */
+        }
+        .btn-login:hover { background: #2563EB; } /* 마우스 올렸을 때 진한 파란색 */
+
+        /* 마이페이지 버튼 (텍스트 형태) */
+        .btn-text {
+            color: #2C3E50; font-weight: bold; text-decoration: none; font-size: 14px;
+        }
+        /* 로그아웃 버튼 (경고 느낌의 붉은색) */
+        .btn-logout {
+            color: #F43F5E; font-weight: bold; text-decoration: none; font-size: 14px;
+        }
+
+        /* [3] 중앙 히어로 섹션 (핵심 메시지와 스캔 버튼) */
+        .hero {
+            flex: 1; /* 남는 세로 공간을 모두 차지하도록 확장 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* 세로 중앙 정렬 */
+            align-items: center;     /* 가로 중앙 정렬 */
+            text-align: center;      /* 글자 가운데 정렬 */
+            padding: 40px 20px;
+        }
+        .hero-subtitle { color: #3B82F6; font-weight: bold; font-size: 14px; margin-bottom: 15px; letter-spacing: 1px; }
+        .hero-title { font-size: 46px; font-weight: 800; line-height: 1.3; margin-bottom: 20px; color: #1E293B; }
+        .hero-desc { color: #64748B; font-size: 18px; margin-bottom: 40px; }
+
+        /* 거대한 녹색 스캔 시작 버튼 */
+        .btn-scan {
+            background: #10B981; color: white;
+            padding: 18px 55px; border-radius: 35px; /* 완전한 타원형으로 둥글게 */
+            text-decoration: none; font-size: 18px; font-weight: bold;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); /* 버튼 아래에 녹색 빛 그림자 */
+            transition: all 0.3s;
+        }
+        .btn-scan:hover { transform: scale(1.05); background: #059669; } /* 마우스 올리면 버튼이 1.05배 커짐 */
+
+        /* [4] 하단 기능 설명 카드 섹션 */
+        .cards-container {
+            display: flex;
+            gap: 20px; /* 카드 사이 간격 */
+            justify-content: center;
+            padding: 0 80px 60px;
+            max-width: 1200px; /* 화면이 너무 넓어져도 카드가 퍼지지 않게 최대 크기 제한 */
+            margin: 0 auto;    /* 화면 중앙에 배치 */
+            width: 100%;
+        }
+
+        /* 개별 카드 디자인 */
+        .card {
+            background: white; border-radius: 20px;
+            padding: 30px 25px; flex: 1; /* 3개의 카드가 1:1:1 비율로 너비를 가짐 */
+            border: 1px solid #E2E8F0;
+            position: relative; overflow: hidden; /* 쉬머 효과(빛)가 카드 밖으로 나가지 않게 자름 */
+            opacity: 0; /* 애니메이션 전에는 투명하게 숨겨둠 */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        /* [애니메이션 1] 카드가 아래에서 위로 스르륵 올라오는 효과 */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); } /* 시작: 30px 아래, 투명 */
+            to { opacity: 1; transform: translateY(0); }      /* 끝: 원래 위치, 불투명 */
+        }
+        .card.animate { animation: slideUp 0.6s cubic-bezier(.22,.8,.36,1) forwards; }
+        /* 각 카드마다 0.1s, 0.3s, 0.5s 기다렸다가 올라오도록 시차(Delay) 적용 */
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.3s; }
+        .card:nth-child(3) { animation-delay: 0.5s; }
+
+        /* 카드 안의 작은 색상 포인트 점 */
+        .dot { width: 10px; height: 10px; border-radius: 50%; margin-bottom: 15px; }
+        .dot-green { background: #10B981; }
+        .dot-blue { background: #3B82F6; }
+        .dot-yellow { background: #F59E0B; }
+
+        .card-title { font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #1E293B; }
+        .card-desc { font-size: 14px; color: #64748B; line-height: 1.6; }
+
+        /* [애니메이션 2] 카드 표면에 빛이 대각선으로 지나가는 고급스러운 Shimmer 효과 */
+        .shimmer {
+            position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmerEffect 3s infinite; /* 3초마다 무한 반복 */
+        }
+        @keyframes shimmerEffect {
+            0% { left: -100%; } /* 왼쪽 밖에서 시작 */
+            100% { left: 150%; } /* 오른쪽 밖으로 사라짐 */
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <img src="{{ url_for('static', path='/logo.png') }}" alt="ToneGuard Logo">
+        </div>
+        
+        <div class="header-menu">
+            {% if is_logged_in %}
+                <a href="/mypage" class="btn-text">마이페이지</a>
+                <a href="/logout" class="btn-logout">로그아웃</a>
+            {% else %}
+                <a href="/login" class="btn-login">로그인</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <main class="hero">
+        <p class="hero-subtitle">TONE GUARD · AI 말투 교정</p>
+        <h1 class="hero-title">무심코 보낸 한 줄이<br>관계를 바꿉니다</h1>
+        <p class="hero-desc">보내기 전, 말투를 한 번 더.</p>
+        
+        {% if is_logged_in %}
+            <a href="#" class="btn-scan" onclick="runScanner(event)">Scan (스캔 시작)</a>
+        {% else %}
+            <a href="#" class="btn-scan" onclick="requireLogin(event)">Scan (스캔 시작)</a>
+        {% endif %}
+    </main>
+
+    <section class="cards-container">
+        <div class="card animate">
+            <div class="shimmer"></div>
+            <div class="dot dot-green"></div>
+            <div class="card-title">실시간 감지</div>
+            <div class="card-desc">슬랙·디스코드 메시지를<br>즉시 분석</div>
+        </div>
+        <div class="card animate">
+            <div class="shimmer"></div>
+            <div class="dot dot-blue"></div>
+            <div class="card-title">톤 분석</div>
+            <div class="card-desc">공격성·직접성·감정<br>수치 제공</div>
+        </div>
+        <div class="card animate">
+            <div class="shimmer"></div>
+            <div class="dot dot-yellow"></div>
+            <div class="card-title">대안 제시</div>
+            <div class="card-desc">상황에 맞는 교정 문장<br>3가지 추천</div>
+        </div>
+    </section>
+
+    <script>
+        // 비로그인 사용자가 스캔 버튼을 눌렀을 때 실행되는 함수
+        function requireLogin(event) {
+            event.preventDefault(); // <a> 태그의 기본 성질(클릭 시 페이지 최상단으로 튕기는 현상)을 막아줍니다.
+            alert("안내: 로그인이 필요합니다."); // 알림창을 띄움
+            window.location.href = "/login";     // 로그인 페이지로 강제 이동
+        }
+
+        // 로그인 사용자가 스캔 버튼을 눌렀을 때 서버와 통신하는 함수
+        function runScanner(event) {
+            event.preventDefault(); 
+            
+            // fetch API를 이용해 화면 새로고침 없이 백그라운드에서 서버의 '/start-scanner' 길로 POST 요청을 보냅니다.
+            fetch('/start-scanner', { method: 'POST' })
+            .then(response => response.json()) // 서버의 응답을 JSON 데이터로 변환
+            .then(data => {
+                // 서버가 성공(success) 메시지를 보내면 콘솔에만 기록하고 화면은 자연스럽게 최소화되도록 둡니다.
+                if(data.status === 'success') {
+                    console.log("스캐너 실행 성공"); 
+                } else {
+                    // 서버에서 에러가 났다면 사용자에게 에러 메시지를 띄워줍니다.
+                    alert("에러 발생: " + data.message);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
