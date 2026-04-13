@@ -2,6 +2,7 @@ from sqlalchemy import VARCHAR, Column, Integer, String, Float, Text, DateTime
 from sqlalchemy.sql import func
 from pgvector.sqlalchemy import Vector
 from database import Base
+from sqlalchemy import ForeignKey
 
 class User(Base):
     __tablename__ = "users"
@@ -10,7 +11,6 @@ class User(Base):
     email = Column(String(100), unique=True, nullable=False)
     pwd = Column(String(255), nullable=False)
     name = Column(String(50), nullable=False)
-    nick = Column(String(50))
     dept = Column(String(50))
     job = Column(String(50))
     profile_img = Column(String(255))
@@ -20,7 +20,7 @@ class Correction(Base):
     __tablename__ = "corrections"
 
     corr_idx = Column(Integer, primary_key=True, index=True)
-    id = Column(Integer)
+    id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     upload_text = Column(Text)
     upload_vector = Column(Vector(768))
     corr_text = Column(Text)

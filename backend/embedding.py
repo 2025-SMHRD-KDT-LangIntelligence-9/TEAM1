@@ -1,19 +1,20 @@
 import numpy as np
 import pickle
+import os
 from kobert_transformers import get_tokenizer
 from transformers import BertModel
 from database import SessionLocal
-from models import Embeddings
-import torch
 from models import Embeddings, Correction
+import torch
 
 # KoBERT 모델 로드
 tokenizer = get_tokenizer()
 model = BertModel.from_pretrained('monologg/kobert')
 model.eval()
 
-# 맥락 분류기 로드
-with open(r'C:\Users\smhrd\Desktop\backend\context_classifier.pkl', 'rb') as f:
+# 맥락 분류기 로드 (현재 파일 기준 상대경로)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+with open(os.path.join(BASE_DIR, 'context_classifier.pkl'), 'rb') as f:
     saved = pickle.load(f)
     classifier = saved['classifier']
     label_encoder = saved['label_encoder']

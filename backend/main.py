@@ -15,6 +15,16 @@ from embedding import get_vector
 from schemas import UserCreate, UserLogin, TextAnalyze, CorrectionCreate, SaveCorrection
 from embedding import search_similar, search_history
 from schemas import UserCreate, UserLogin, TextAnalyze, CorrectionCreate, SaveCorrection, UserUpdate
+import os
+import httpx
+import logging
+import traceback
+
+logging.basicConfig(
+    level=logging.ERROR,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 
 
@@ -84,7 +94,6 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         email=user.email,
         pwd=user.password,
         name=user.name,
-        nick=user.nick,
         dept=user.dept,
         job=user.job,
         profile_img=''
@@ -120,7 +129,8 @@ def save(request: SaveCorrection, db: Session = Depends(get_db), user_id: int = 
         db.commit()
         return {"message": "저장 완료!"}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.exception(f"❌ /save 에러")  # 스택 트레이스 자동 포함
+        raise HTTPException(status_code=500, detail=str(e)) 
 
 @app.post("/analyze")
 def analyze(request: TextAnalyze, db: Session = Depends(get_db), user_id: int = Depends(get_current_user)):
@@ -149,9 +159,28 @@ def analyze(request: TextAnalyze, db: Session = Depends(get_db), user_id: int = 
         }
 
     except Exception as e:
-        print(f"❌ 에러: {e}")
-        import traceback
-        traceback.print_exc()
+        logger.exception(f"❌ /analyze 에러")  # 스택 트레이스 자동 포함
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/user")
+def get_user(db: Session = Depends(get_db), user_id: int = Depends(get_current_user)):
+    try:
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다")
+        return {
+            "id": user.id,
+            "email": user.email,
+            "name": user.name,
+            "dept": user.dept,
+            "job": user.job,
+            "profile_img": user.profile_img,
+            "joined_at": user.joined_at
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("❌ /user GET 에러")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.put("/user")
@@ -162,23 +191,30 @@ def update_user(request: UserUpdate, db: Session = Depends(get_db), user_id: int
             raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다")
 
         if request.name: user.name = request.name
-        if request.nick: user.nick = request.nick
         if request.dept: user.dept = request.dept
         if request.job: user.job = request.job
+
+        # 비밀번호 변경
+        if request.new_password:
+            if not request.current_password:
+                raise HTTPException(status_code=400, detail="현재 비밀번호를 입력해주세요")
+            if user.pwd != request.current_password:  # 해싱 고치면 verify_password()로 교체
+                raise HTTPException(status_code=400, detail="현재 비밀번호가 틀렸습니다")
+            user.pwd = request.new_password  # 해싱 고치면 hash_password()로 교체
 
         db.commit()
         return {"message": "개인정보 수정 완료!"}
 
+    except HTTPException:
+        raise
     except Exception as e:
+        logger.exception(f"❌ /user PUT 에러")  # 스택 트레이스 자동 포함
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.delete("/user")
 def delete_user(db: Session = Depends(get_db), user_id: int = Depends(get_current_user)):
     try:
-        # 교정 기록 먼저 삭제
-        db.query(Correction).filter(Correction.id == user_id).delete()
-        
-        # 사용자 삭제
+        # 사용자 삭제 (교정 기록은 CASCADE로 자동 삭제)
         user = db.query(User).filter(User.id == user_id).first()
         if not user:
             raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다")
@@ -188,4 +224,30 @@ def delete_user(db: Session = Depends(get_db), user_id: int = Depends(get_curren
         return {"message": "회원 탈퇴 완료!"}
 
     except Exception as e:
+        logger.exception(f"❌ /user DELETE 에러")  # 스택 트레이스 자동 포함
+        raise HTTPException(status_code=500, detail=str(e)) 
+
+@app.get("/history")
+def get_history(db: Session = Depends(get_db), user_id: int = Depends(get_current_user)):
+    try:
+        corrections = db.query(Correction).filter(
+            Correction.id == user_id
+        ).order_by(
+            Correction.created_at.desc()
+        ).all()
+
+        return {
+            "history": [
+                {
+                    "corr_idx": c.corr_idx,
+                    "upload_text": c.upload_text,
+                    "corr_text": c.corr_text,
+                    "tone_type": c.tone_type,
+                    "created_at": c.created_at
+                }
+                for c in corrections
+            ]
+        }
+    except Exception as e:
+        logger.exception(f"❌ /history GET 에러")  # 스택 트레이스 자동 포함
         raise HTTPException(status_code=500, detail=str(e))

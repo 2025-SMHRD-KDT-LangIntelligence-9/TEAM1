@@ -31,7 +31,7 @@ def get_vector(text: str) -> list:
 
 # 데이터 로드
 print("데이터 로딩 중...")
-df = pd.read_excel(r'C:\Users\smhrd\Desktop\backend\data\데이터파일_정제__1_ (1).xlsx')
+df = pd.read_excel(r'C:\Users\smhrd\Desktop\backend\data\데이터파일 (5).xlsx')
 print(f"원본 데이터 수: {len(df)}개")
 
 # original_text + corr_text 각각 따로 행으로 만들기
@@ -61,6 +61,7 @@ print(f"벡터 shape: {X.shape}")  # (1956, 768)
 
 # 레이블 인코딩
 le = LabelEncoder()
+
 y = le.fit_transform(labels)
 print(f"맥락 클래스: {le.classes_}")
 
