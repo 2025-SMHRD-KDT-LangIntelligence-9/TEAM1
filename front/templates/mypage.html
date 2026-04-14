@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToneGuard 마이페이지</title>
+    <style>
+        /* =========================================
+           [1] 색상 팔레트 (테마 관리)
+           ========================================= */
+        :root {
+            --header-w: #FFFFFF; /* 기본 흰색 배경 */
+            --bg-sub: #F4F7FA;   /* 눈이 편안한 연한 쿨그레이 배경 */
+            --text-d: #2C3E50;   /* 텍스트 기본 색상 (다크 네이비) */
+            --success-m: #10B981;/* 성공/강조용 초록색 */
+            --primary-b: #3B82F6;/* 메인 브랜드 컬러 (파란색) */
+            --danger-p: #F43F5E; /* 경고/탈퇴용 빨간색 */
+            --border-c: #E2E8F0; /* 연한 테두리 색상 */
+        }
+
+        /* =========================================
+           [2] 기본 레이아웃 및 폰트 설정
+           ========================================= */
+        body { 
+            font-family: '맑은 고딕', sans-serif; 
+            background: var(--bg-sub); 
+            margin: 0; color: var(--text-d); 
+            display: flex; flex-direction: column; min-height: 100vh; 
+        }
+
+        /* =========================================
+           [3] 상단 헤더 영역 (로고, 환영인사, 돌아가기 버튼)
+           ========================================= */
+        header { 
+            background: var(--header-w); height: 80px; display: flex; 
+            justify-content: space-between; align-items: center; 
+            padding: 0 40px; border-bottom: 1px solid var(--border-c); 
+        }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .greeting { font-size: 18px; font-weight: bold; }
+        
+        .btn-back { 
+            padding: 8px 15px; border: 1px solid var(--border-c); border-radius: 8px; 
+            color: var(--text-d); text-decoration: none; font-size: 14px; font-weight: bold; 
+            transition: 0.2s; 
+        }
+        .btn-back:hover { background: #F8FAFC; }
+
+        /* =========================================
+           [4] 메인 콘텐츠 영역 (사이드바 + 우측 본문)
+           ========================================= */
+        .container { display: flex; flex: 1; padding: 30px 40px; gap: 20px; }
+
+        /* 좌측 사이드바 메뉴 */
+        .sidebar { 
+            background: var(--header-w); width: 230px; border-radius: 20px; 
+            border: 1px solid var(--border-c); padding: 30px 15px; 
+        }
+        .sidebar-title { color: var(--primary-b); font-size: 12px; font-weight: bold; margin-bottom: 15px; padding-left: 10px; }
+        .menu-btn { 
+            display: block; width: 100%; text-align: left; background: transparent; 
+            border: none; padding: 15px 10px; font-size: 15px; font-weight: bold; 
+            color: var(--text-d); border-radius: 10px; cursor: pointer; transition: 0.2s; 
+        }
+        .menu-btn:hover { background: var(--bg-sub); }
+
+        /* 우측 본문 (데이터가 표시될 공간) */
+        .content { 
+            background: var(--header-w); flex: 1; border-radius: 20px; 
+            border: 1px solid var(--border-c); padding: 50px; position: relative; 
+        }
+        
+        /* [핵심] SPA(Single Page App) 방식 뷰 전환: 기본적으로 다 숨겨둡니다. */
+        .view-section { display: none; text-align: center; }
+        /* active 클래스가 붙은 섹션만 화면에 나타납니다. */
+        .view-section.active { display: block; }
+
+        /* =========================================
+           [5] 교정 기록 카드 및 폼 디자인
+           ========================================= */
+        .history-card { 
+            background: var(--bg-sub); border: 1px solid var(--border-c); 
+            border-radius: 15px; padding: 20px; margin-bottom: 15px; text-align: left; 
+        }
+        .history-card span { color: var(--success-m); font-weight: bold; display: block; margin-bottom: 10px; }
+
+        /* 버튼 크기 및 모양 제어 */
+        .btn-large { 
+            width: 240px; height: 65px; border-radius: 15px; border: none; 
+            font-size: 16px; font-weight: bold; cursor: pointer; margin: 10px auto; 
+            display: block; transition: 0.2s; 
+        }
+        .btn-blue { background: var(--primary-b); color: white; }
+        .btn-blue:hover { background: #2563EB; }
+        .btn-danger-outline { background: #FFF1F2; color: var(--danger-p); border: 1px solid var(--danger-p); }
+        .btn-success { background: var(--success-m); color: white; border-radius: 30px; height: 55px; }
+        .btn-danger { background: var(--danger-p); color: white; border-radius: 30px; height: 55px; }
+
+        /* 정보 수정 폼 영역 */
+        .input-group { display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
+        .input-group label { width: 140px; text-align: right; margin-right: 15px; font-weight: bold; }
+
+        /* 비밀번호 입력창 & 눈 모양 아이콘 위치 잡기 */
+        .password-wrapper { position: relative; display: inline-block; width: 240px; }
+        .password-wrapper input { 
+            width: 100%; height: 48px; border-radius: 12px; border: 1px solid var(--border-c); 
+            background: var(--bg-sub); padding: 0 45px 0 15px; box-sizing: border-box; 
+        }
+        .eye-icon {
+            position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
+            cursor: pointer; font-size: 18px; color: #94A3B8; user-select: none;
+        }
+        /* 비밀번호 불일치 에러 메시지 디자인 */
+        #pw-match-error {
+            color: var(--danger-p); /* 경고용 빨간색 */
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 5px;
+            display: none; /* 처음에는 화면에서 숨김 */
+            margin-left: 155px; /* 입력창 위치와 세로줄을 예쁘게 맞춤 */
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <img src="{{ url_for('static', path='/logo.png') }}" alt="Logo" height="50">
+            <span class="greeting">반갑습니다, {{ user_name }}님</span>
+        </div>
+        <a href="/" class="btn-back">메인으로 돌아가기</a>
+    </header>
+
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-title">MY MENU</div>
+            <button class="menu-btn" onclick="showView('history-view'); loadHistory();">📜 나의 교정 기록</button>
+            <button class="menu-btn" onclick="showView('settings-view')">⚙️ 설정 및 관리</button>
+        </div>
+
+        <div class="content">
+            
+            <div id="default-view" class="view-section active">
+                <h1 style="color: var(--border-c); font-size: 50px; margin-top: 20%;">ToneGuard</h1>
+                <p style="color: #64748B;">좌측 메뉴를 선택해 주세요.</p>
+            </div>
+
+            <div id="history-view" class="view-section">
+                <h2 style="text-align: left; margin-bottom: 20px;">나의 교정 기록</h2>
+                <div id="history-list">
+                    <p style="color: #64748B;">기록을 불러오는 중...</p>
+                </div>
+            </div>
+
+            <div id="settings-view" class="view-section">
+                <h2 style="margin-bottom: 40px;">설정 및 관리</h2>
+                <button class="btn-large btn-blue" onclick="showView('edit-view')">👤 정보 수정</button>
+                <button class="btn-large btn-danger-outline" onclick="showView('withdraw-view')">⚠️ 탈퇴</button>
+            </div>
+
+            <div id="edit-view" class="view-section">
+                <h2 style="color: var(--success-m); margin-bottom: 40px;">비밀번호 변경</h2>
+
+                <div class="input-group">
+                    <label>기존 비밀번호</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="pw-old"> 
+                        <span class="eye-icon" onclick="togglePassword('pw-old', this)">👁️</span>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="pw-new">새 비밀번호</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="pw-new" oninput="checkPasswordMatch()">
+                        <span class="eye-icon" onclick="togglePassword('pw-new', this)">👁️</span>
+                    </div>
+                </div>
+                
+                <div class="input-group" style="flex-direction: column;">
+                    <div style="display: flex; align-items: center; justify-content: center; width: 100%;">
+                        <label for="pw-confirm">새 비밀번호 확인</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="pw-confirm" oninput="checkPasswordMatch()">
+                            <span class="eye-icon" onclick="togglePassword('pw-confirm', this)">👁️</span>
+                        </div>
+                    </div>
+                    <div id="pw-match-error">새 비밀번호가 일치하지않습니다. 확인해주세요</div>
+                </div>
+
+                <button class="btn-large btn-success" style="margin-top: 30px;" onclick="alert('준비 중인 기능입니다.')">변경 완료</button>
+            </div>
+
+            <div id="withdraw-view" class="view-section">
+                <h2 style="color: var(--danger-p); margin-top: 100px;">회원 탈퇴</h2>
+                <p>탈퇴하시면 모든 데이터가 삭제되며 복구할 수 없습니다.<br>정말로 떠나시겠습니까?</p>
+                <button class="btn-large btn-danger" style="margin-top: 40px;" onclick="confirmWithdraw()">탈퇴 확인</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * [기능 1] 사이드바 탭 전환 함수
+         */
+        function showView(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+        }
+
+        /**
+         * [기능 2] 비밀번호 눈 아이콘 제어 (1.5초 보안 보기)
+         */
+        function togglePassword(inputId, iconElement) {
+            const passwordInput = document.getElementById(inputId);
+            
+            // 입력창이 없거나 이미 텍스트 모드라면 작동하지 않음
+            if (!passwordInput || passwordInput.type === "text") return;
+
+            passwordInput.type = "text";     // 글자 보이기
+            iconElement.innerText = "👁️‍🗨️"; // 아이콘 변경
+
+            // 1.5초(1500ms) 뒤에 다시 자동으로 가려지게 만듭니다.
+            setTimeout(() => {
+                passwordInput.type = "password";
+                iconElement.innerText = "👁️"; 
+            }, 1500); 
+        }
+
+        /**
+         * [기능 3] 새 비밀번호 일치 여부 실시간 검사
+         */
+        function checkPasswordMatch() {
+            const pwNew = document.getElementById('pw-new').value;
+            const pwConfirm = document.getElementById('pw-confirm').value;
+            const errorMsg = document.getElementById('pw-match-error');
+
+            if (pwConfirm.length > 0 && pwNew !== pwConfirm) {
+                errorMsg.style.display = 'block';
+            } else {
+                errorMsg.style.display = 'none';
+            }
+        }
+
+        /**
+         * [기능 4] 교정 기록 불러오기
+         */
+        function loadHistory() {
+            const listContainer = document.getElementById('history-list');
+            listContainer.innerHTML = '<p style="color: #64748B;">기록을 불러오는 중...</p>';
+            
+            fetch('/api/history') 
+                .then(response => response.json())
+                .then(data => {
+                    listContainer.innerHTML = ''; 
+                    
+                    if (!data.history || data.history.length === 0) {
+                        listContainer.innerHTML = '<p>기록이 없습니다.</p>';
+                        return;
+                    }
+
+                    data.history.forEach(item => {
+                        const card = document.createElement('div');
+                        card.className = 'history-card';
+                        
+                        const tone = item.tone_type || item.context_type || '교정';
+                        const original = item.original || item.upload_text || '원문 없음';
+                        const corrected = item.corrected || item.corr_text || '교정문 없음';
+
+                        card.innerHTML = `
+                            <span>[${tone}]</span>
+                            <p style="margin-bottom: 5px;">원문: ${original}</p>
+                            <p style="font-weight:bold; color: #1E293B;">교정: ${corrected}</p>
+                        `;
+                        listContainer.appendChild(card);
+                    });
+                })
+                .catch(err => {
+                    listContainer.innerHTML = '<p style="color:red;">서버 통신 오류가 발생했습니다.</p>';
+                    console.error("History fetch error:", err);
+                });
+        }
+
+        /**
+         * [기능 5] 회원 탈퇴 확인 알림창
+         */
+        function confirmWithdraw() {
+            if(confirm("확실히 탈퇴를 하시겠습니까?\n이 작업은 되돌릴 수 없습니다.")) {
+                alert("기능 연동 준비 중입니다.");
+            }
+        }
+    </script>
+</body>
+</html>
