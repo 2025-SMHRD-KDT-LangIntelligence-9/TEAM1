@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from database import engine, get_db
 from models import Base, User, Correction
@@ -19,6 +19,8 @@ import os
 import httpx
 import logging
 import traceback
+from contextlib import asynccontextmanager
+from scheduler import start_scheduler, stop_scheduler
 
 logging.basicConfig(
     level=logging.ERROR,
@@ -28,8 +30,13 @@ logger = logging.getLogger(__name__)
 
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    start_scheduler()
+    yield
+    stop_scheduler()
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
@@ -198,9 +205,9 @@ def update_user(request: UserUpdate, db: Session = Depends(get_db), user_id: int
         if request.new_password:
             if not request.current_password:
                 raise HTTPException(status_code=400, detail="현재 비밀번호를 입력해주세요")
-            if user.pwd != request.current_password:  # 해싱 고치면 verify_password()로 교체
+            if user.pwd != request.current_password:
                 raise HTTPException(status_code=400, detail="현재 비밀번호가 틀렸습니다")
-            user.pwd = request.new_password  # 해싱 고치면 hash_password()로 교체
+            user.pwd = request.new_password
 
         db.commit()
         return {"message": "개인정보 수정 완료!"}
@@ -214,6 +221,8 @@ def update_user(request: UserUpdate, db: Session = Depends(get_db), user_id: int
 @app.delete("/user")
 def delete_user(db: Session = Depends(get_db), user_id: int = Depends(get_current_user)):
     try:
+        # 교정 기록 먼저 삭제
+        db.query(Correction).filter(Correction.id == user_id).delete(synchronize_session=False)
         # 사용자 삭제 (교정 기록은 CASCADE로 자동 삭제)
         user = db.query(User).filter(User.id == user_id).first()
         if not user:
@@ -251,3 +260,27 @@ def get_history(db: Session = Depends(get_db), user_id: int = Depends(get_curren
     except Exception as e:
         logger.exception(f"❌ /history GET 에러")  # 스택 트레이스 자동 포함
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete("/history")
+def delete_history(corr_idxs: list[int] = Query(...), db: Session = Depends(get_db), user_id: int = Depends(get_current_user)):
+    records = db.query(Correction).filter(
+        Correction.corr_idx.in_(corr_idxs),
+        Correction.id == user_id
+    ).all()
+    if not records:
+        raise HTTPException(status_code=404, detail="해당 기록을 찾을 수 없습니다")
+    for record in records:
+        db.delete(record)
+    db.commit()
+    return {"message": f"교정 기록 {len(records)}건 삭제 완료!"}
+
+@app.delete("/history")
+def delete_all_history(db: Session = Depends(get_db), user_id: int = Depends(get_current_user)):
+    deleted = db.query(Correction).filter(Correction.id == user_id).delete(synchronize_session=False)
+    db.commit()
+    return {"message": f"교정 기록 전체 삭제 완료! ({deleted}건)"}
+
+@app.get("/check-email")
+def check_email(email: str, db: Session = Depends(get_db)):
+    existing = db.query(User).filter(User.email == email).first()
+    return {"available": existing is None}
