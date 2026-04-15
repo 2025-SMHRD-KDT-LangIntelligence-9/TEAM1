@@ -31,6 +31,13 @@ def capture_text(app):
     app.fixed_popup_x = app.fixed_popup_y = None
     
     time.sleep(0.1)
+    
+    # 🌟 [이곳에 딱 한 줄 추가!] 
+    # 전체 선택(ctrl+a)을 하기 전에, 예전에 복사해둔 글자가 남아있지 않도록 
+    # 클립보드를 텅 빈 백지상태('')로 먼저 청소합니다!
+    import pyperclip
+    pyperclip.copy('') 
+    
     pyautogui.hotkey('ctrl', 'a')
     time.sleep(0.2)
     pyautogui.hotkey('ctrl', 'c')
@@ -124,6 +131,7 @@ def show_popup(app, original, corrs, context):
         app.is_popup_open = False 
         pop.destroy()
     pop.protocol("WM_DELETE_WINDOW", close)
+    pop.bind("<Escape>", lambda e: close())
 
     header = ctk.CTkFrame(pop, fg_color="transparent")
     header.pack(fill="x", padx=15, pady=(12, 8))
