@@ -244,7 +244,7 @@ async def delete_account(request: Request):
     except Exception as e:
         return JSONResponse(status_code=500, content={"message": str(e)})
 
-# 👉 3-6. 특정 교정 기록 1개 삭제하기 (mypage.html 에서 사용)
+# 👉 특정 교정 기록 1개 삭제하기 (mypage.html 에서 사용)
 @app.delete("/api/history/{item_id}")
 async def delete_single_history(item_id: int, request: Request):
     token = request.cookies.get("user_session")
@@ -253,62 +253,46 @@ async def delete_single_history(item_id: int, request: Request):
     
     headers = {"Authorization": f"Bearer {token}"}
     try:
-        # 백엔드 서버의 /history/숫자 주소로 삭제(DELETE) 요청을 보냅니다.
-        res = requests.delete(f"{BACKEND_URL}/history/{item_id}", headers=headers)
+        # 🌟 [여기 수정됨!] 백엔드가 요구하는 '?corr_idxs=숫자' 형태로 주소를 정확히 맞춰서 보냅니다!
+        res = requests.delete(f"{BACKEND_URL}/history?corr_idxs={item_id}", headers=headers)
         
         if res.status_code == 200:
             return {"status": "success"}
         else:
-            return JSONResponse(status_code=400, content={"status": "error", "message": "기록 삭제에 실패했습니다."})
+            return JSONResponse(status_code=res.status_code, content={"status": "error", "message": "기록 삭제에 실패했습니다."})
             
     except Exception as e:
         return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
 
-# 👉 3-5. 대화 기록 저장 동의 상태 업데이트 (mypage.html 에서 사용)
+# 👉 3-5. 대화 기록 저장 동의 상태 업데이트 (백엔드 안 거치고 쿠키에 저장!)
 @app.post("/api/update-consent")
 async def update_consent(request: Request):
-    # 1. 쿠키에서 로그인 토큰을 확인합니다.
-    token = request.cookies.get("user_session")
-    if not token:
-        return JSONResponse(status_code=401, content={"status": "error", "message": "로그인이 필요합니다."})
-    
-    # 2. 프론트엔드에서 보낸 동의 여부(true/false) 데이터를 읽습니다.
     data = await request.json()
-    is_consent = data.get("consent")
+    is_consent = data.get("consent") # 프론트에서 온 True 또는 False
 
-    headers = {"Authorization": f"Bearer {token}"}
-    try:
-        # 3. 진짜 백엔드 서버의 /user/consent 주소로 상태를 보냅니다.
-        # 백엔드 팀원분과 약속한 주소로 데이터를 토스합니다.
-        res = requests.post(f"{BACKEND_URL}/user/consent", json={"consent": is_consent}, headers=headers)
-        
-        if res.status_code == 200:
-            return {"status": "success"}
-        else:
-            return JSONResponse(status_code=400, content={"status": "error", "message": "동의 상태 업데이트 실패"})
-            
-    except Exception as e:
-        return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
+    # 백엔드로 가지 않고, 곧바로 "성공" 응답을 만들면서 브라우저 쿠키에 상태를 구워버립니다.
+    response = JSONResponse(content={"status": "success"})
+    response.set_cookie(key="user_consent", value=str(is_consent).lower()) # "true" 또는 "false"로 저장
+    return response
 
 # 스캐너 데스크톱 앱(scan_corr.py) 실행
 @app.post("/start-scanner")
 async def start_scanner(request: Request):
     try:
-        # 스캐너 앱도 로그인 정보를 알아야 하므로 쿠키에서 토큰을 꺼냅니다.
         token = request.cookies.get("user_session")
         if not token:
             return {"status": "error", "message": "로그인이 필요합니다."}
 
-        # 1. 스캐너 앱이 잘 보이도록 현재 활성화된 브라우저 창을 밑으로 내립니다.
+        # 🌟 [핵심] 방금 저장해둔 브라우저 쿠키에서 동의 상태를 꺼냅니다. (기본값은 "true")
+        consent_status = request.cookies.get("user_consent", "true")
+
         active_window = gw.getActiveWindow()
         if active_window:
             active_window.minimize() 
 
-        # 2. 파이썬 명령어로 scan_corr.py를 별개의 프로그램으로 실행시킵니다.
-        # 이때 스캐너 앱에서 인증을 할 수 있도록 방금 꺼낸 토큰을 인자(파라미터)로 같이 넘겨줍니다.
-        subprocess.Popen([sys.executable, "scan_corr.py", token])
+        # 🌟 [핵심] 파이썬 스캐너를 켤 때, 토큰(sys.argv[1])과 함께 동의상태(sys.argv[2])도 넘겨줍니다!
+        subprocess.Popen([sys.executable, "scan_corr.py", token, consent_status])
         
-        # 프론트엔드 쪽에 성공했다고 응답을 보냅니다.
         return {"status": "success"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
