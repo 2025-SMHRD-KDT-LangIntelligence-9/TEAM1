@@ -187,8 +187,15 @@
         function runScanner(event) {
             event.preventDefault();
             fetch('/start-scanner', { method: 'POST' })
-                .then(res => res.json())
-                .then(data => { if (data.status === 'success') alert("스캐너가 실행되었습니다."); else alert("에러: " + data.message); });
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // ✅ 알림창(alert)을 지우고, 대신 개발자 도구(F12)에만 조용히 성공 기록을 남깁니다.
+                    console.log("✅ 스캐너가 백그라운드에서 성공적으로 실행되었습니다."); 
+                } else {
+                    alert("오류: " + data.message); // 진짜 에러가 났을 때만 알림창을 띄웁니다.
+                }
+            })
         }
     </script>
 </body>
