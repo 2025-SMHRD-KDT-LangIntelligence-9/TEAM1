@@ -12,6 +12,8 @@ API_ANALYZE_URL = "http://192.168.0.77:8000/analyze"
 API_SAVE_URL = "http://192.168.0.77:8000/save"
 
 USER_TOKEN = sys.argv[1] if len(sys.argv) > 1 else ""
+# 🌟 [이 줄을 추가해 주세요!] main.py가 넘겨준 두 번째 인자(동의 상태)를 받습니다.
+USER_CONSENT = sys.argv[2] if len(sys.argv) > 2 else "true"
 typing_timer = None
 
 # 🎯 [핵심] 우리가 감시할 앱 명단 (영어 exe 이름과 한글 제목 모두 포함)
@@ -153,10 +155,13 @@ def apply_text(app, corr, tone, orig, ctx, close_fn):
         time.sleep(0.3) 
         pyautogui.hotkey('ctrl', 'v')
         app.is_pasting = False
-        try: 
-            payload = {"upload_text": orig, "corr_text": corr, "tone_type": ctx, "selected_tone": tone}
-            requests.post(API_SAVE_URL, json=payload, headers={"Authorization": f"Bearer {USER_TOKEN}"}, timeout=5)
-        except: pass
+        
+        # 🌟 [핵심] 동의(true) 상태일 때만 백엔드로 /save 요청을 날립니다!
+        if USER_CONSENT.lower() == "true":
+            try: 
+                payload = {"upload_text": orig, "corr_text": corr, "tone_type": ctx, "selected_tone": tone}
+                requests.post(API_SAVE_URL, json=payload, headers={"Authorization": f"Bearer {USER_TOKEN}"}, timeout=5)
+            except: pass
             
     threading.Thread(target=paste_and_save, daemon=True).start()
 
