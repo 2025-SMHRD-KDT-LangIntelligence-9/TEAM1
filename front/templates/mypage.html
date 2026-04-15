@@ -274,8 +274,8 @@
                         const original = item.original || item.upload_text || '원문 없음';
                         const corrected = item.corrected || item.corr_text || '교정문 없음';
                         
-                        // 🌟 [핵심] 백엔드가 주는 기록의 고유 번호(id)를 가져옵니다.
-                        const historyId = item.id || item.history_id; 
+                        // ✅ [수정됨] 백엔드가 주는 진짜 이름표인 'corr_idx'로 바꿨습니다!
+                        const historyId = item.corr_idx;
 
                         // 삭제 버튼 코드가 맨 위에 한 줄 추가되었습니다!
                         card.innerHTML = `
