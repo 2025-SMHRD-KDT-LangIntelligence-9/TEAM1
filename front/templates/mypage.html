@@ -181,11 +181,16 @@
                     </div>
                 </div>
                 
-                <div class="input-group">
-                    <label for="pw-new">새 비밀번호</label>
-                    <div class="password-wrapper">
-                        <input type="password" id="pw-new" oninput="checkPasswordMatch()">
-                        <span class="eye-icon" onclick="togglePassword('pw-new', this)">👁️</span>
+                <div class="input-group" style="flex-direction: column;">    
+                    <div style="display: flex; align-items: center; justify-content: center; width: 100%;">
+                        <label for="pw-new">새 비밀번호</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="pw-new" oninput="checkPasswordMatch()">
+                            <span class="eye-icon" onclick="togglePassword('pw-new', this)">👁️</span>
+                        </div>
+                    </div>
+                    <div id="pw-length-error" style="color: #EF4444; font-size: 12px; display: none; margin-top: 5px; width: 100%; text-align: center;">
+                        비밀번호가 너무 쉽습니다! (8자 이상)
                     </div>
                 </div>
                 
@@ -243,12 +248,26 @@
         function checkPasswordMatch() {
             const pwNew = document.getElementById('pw-new').value;
             const pwConfirm = document.getElementById('pw-confirm').value;
-            const errorMsg = document.getElementById('pw-match-error');
+            
+            const lengthError = document.getElementById('pw-length-error');
+            const matchError = document.getElementById('pw-match-error');
 
-            if (pwConfirm.length > 0 && pwNew !== pwConfirm) {
-                errorMsg.style.display = 'block';
+            // 1. 길이 검사 (한 글자라도 쳤는데 8자 미만일 때 빨간 글씨 켜기)
+            if (pwNew.length > 0 && pwNew.length < 8) {
+                lengthError.style.display = 'block';
             } else {
-                errorMsg.style.display = 'none';
+                lengthError.style.display = 'none'; // 8자 넘으면 즉시 숨김!
+            }
+
+            // 2. 일치 검사 (비밀번호 확인 칸에 한 글자라도 쳤을 때 비교 시작)
+            if (pwConfirm.length > 0) {
+                if (pwNew !== pwConfirm) {
+                    matchError.style.display = 'block'; // 다르면 켜기
+                } else {
+                    matchError.style.display = 'none';  // 같으면 숨김!
+                }
+            } else {
+                matchError.style.display = 'none'; // 아예 안 쳤으면 숨김
             }
         }
 
