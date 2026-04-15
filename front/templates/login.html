@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToneGuard - 로그인 및 회원가입</title>
+    <style>
+        body { font-family: '맑은 고딕', sans-serif; background: #F4F7FA; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #2C3E50; }
+        .auth-container { background: #FFFFFF; width: 400px; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid #E2E8F0; }
+        .logo-text { text-align: center; font-size: 32px; font-weight: bold; color: #1E293B; margin-bottom: 30px; }
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 13px; font-weight: bold; color: #64748B; margin-bottom: 5px; }
+        .input-group input { width: 100%; padding: 12px; border: 1px solid #CBD5E1; border-radius: 8px; box-sizing: border-box; font-size: 14px; transition: 0.2s; }
+        .btn-submit { width: 100%; padding: 14px; background: #3B82F6; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+        .btn-submit:hover { background: #2563EB; }
+        .text-link { display: block; text-align: center; margin-top: 20px; color: #3B82F6; font-size: 14px; font-weight: bold; cursor: pointer; text-decoration: none; }
+        .view-section { display: none; }
+        .view-section.active { display: block; }
+
+        /* 체크박스 스타일 */
+        .remember-group { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 13px; color: #64748B; }
+        .remember-group input { width: 16px; height: 16px; cursor: pointer; }
+    </style>
+</head>
+<body onload="initLoginPage()"> <div class="auth-container">
+        <div class="logo-text">ToneGuard</div>
+
+        <div id="login-view" class="view-section active">
+            <h2 style="text-align: center; font-size: 20px; margin-bottom: 25px;">로그인</h2>
+            <form action="/login_process" method="POST" onsubmit="handleLoginSubmit()">
+                <div class="input-group">
+                    <label>이메일</label>
+                    <input type="email" id="login_email" name="email" placeholder="user@example.com" required>
+                </div>
+                <div class="input-group">
+                    <label>비밀번호</label>
+                    <input type="password" name="password" placeholder="비밀번호 입력" required>
+                </div>
+                
+                <div class="remember-group">
+                    <input type="checkbox" id="remember_me">
+                    <label for="remember_me" style="cursor: pointer;">이메일 기억하기</label>
+                </div>
+
+                <button type="submit" class="btn-submit">로그인</button>
+            </form>
+            <div class="text-link" onclick="toggleView('register-view')">아직 계정이 없으신가요? 회원가입</div>
+            <a href="/" class="text-link" style="color: #64748B; margin-top: 10px;">메인 화면으로 돌아가기</a>
+        </div>
+
+        <div id="register-view" class="view-section">
+            <h2 style="text-align: center; font-size: 20px; margin-bottom: 25px;">회원가입</h2>
+            <form action="/register_process" method="POST">
+                <div class="input-group">
+                    <label>이메일</label>
+                    <input type="email" id="reg_email" name="email" placeholder="user@example.com" required onblur="checkEmailDuplicate()">
+                    <div id="email-error-msg" style="display: none; font-size: 12px; font-weight: bold; margin-top: 5px; padding-left: 5px;"></div>
+                </div>
+                <div class="input-group">
+                    <label>비밀번호</label>
+                    <input type="password" name="password" placeholder="비밀번호 6자리 이상" required>
+                </div>
+                <div class="input-group">
+                    <label>이름</label>
+                    <input type="text" name="name" placeholder="홍길동" required>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <div class="input-group" style="flex: 1;"><label>부서</label><input type="text" name="dept"></div>
+                    <div class="input-group" style="flex: 1;"><label>직급</label><input type="text" name="job"></div>
+                </div>
+                <button type="submit" class="btn-submit" style="margin-top: 20px;">가입 완료하기</button>
+            </form>
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 25px;">
+                <button type="button" onclick="toggleView('login-view')" style="flex: 1; padding: 12px; border: 1px solid #CBD5E1; background: white; border-radius: 8px; font-weight: bold; cursor: pointer;">이전</button>
+                <button type="button" onclick="window.location.href='/'" style="flex: 1; padding: 12px; border: none; background: #E2E8F0; border-radius: 8px; font-weight: bold; cursor: pointer;">메인</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. 페이지 로드 시 이메일 꽂아주기 + 흔적 지우기
+        function initLoginPage() {
+            const loginEmailInput = document.getElementById("login_email");
+            const rememberCheckbox = document.getElementById("remember_me");
+
+            // [서열 1순위] 주소창에 이메일 꼬리표가 있는지부터 확인합니다.
+            const urlParams = new URLSearchParams(window.location.search);
+            const emailFromUrl = urlParams.get('email');
+
+            if (emailFromUrl) {
+                // 1) 꼬리표가 있다면, 묻지도 따지지도 않고 이메일 입력칸에 꽂아줍니다.
+                loginEmailInput.value = emailFromUrl;
+                
+                // 2) 오해 방지를 위해 '기억하기' 체크박스는 일단 꺼둡니다.
+                rememberCheckbox.checked = false; 
+
+                // 🌟 [마법의 코드] 데이터를 썼으니, 주소창에서 '?email=...' 흔적을 싹 지워버립니다!
+                // 이렇게 하면 사용자 눈에는 주소창이 '127.0.0.1:8888/login' 으로 아주 깔끔하게 보입니다.
+                window.history.replaceState({}, document.title, "/login");
+                
+                return; // 1순위 작업이 끝났으니 여기서 함수를 종료합니다.
+            }
+
+            // [서열 2순위] 꼬리표가 없다면(평소처럼 접속했다면), 기존에 기억해둔 금고를 열어봅니다.
+            const savedEmail = localStorage.getItem("remembered_email");
+            if (savedEmail) {
+                loginEmailInput.value = savedEmail;
+                rememberCheckbox.checked = true;
+            }
+        }
+
+        // 2. 로그인 버튼 누를 때 이메일 기억 로직 실행
+        function handleLoginSubmit() {
+            // 사용자가 방금 입력한 이메일과, 체크박스에 체크를 했는지(true/false) 확인합니다.
+            const loginEmail = document.getElementById("login_email").value;
+            const isRemembered = document.getElementById("remember_me").checked;
+
+            // [핵심 안전장치] 만약 체크박스에 체크(true)가 되어 있다면?
+            if (isRemembered) {
+                // 브라우저의 안전한 금고(localStorage)에 이메일을 저장합니다.
+                localStorage.setItem("remembered_email", loginEmail);
+            } 
+            // 만약 체크박스를 풀었거나, 애초에 체크를 안 했다면? (무조건 저장을 방지하는 부분)
+            else {
+                // 금고에 혹시 남아있을지 모르는 기존 이메일마저 깔끔하게 삭제해 버립니다.
+                localStorage.removeItem("remembered_email");
+            }
+        }
+
+        // --- 기존 함수 유지 ---
+        function toggleView(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+        }
+
+        // 이메일 중복 체크 (백엔드 available 구조에 맞춤!)
+        function checkEmailDuplicate() {
+            const emailInput = document.getElementById("reg_email").value;
+            const msgBox = document.getElementById("email-error-msg");
+            
+            // 칸이 비어있거나 @가 없으면 무시
+            if (!emailInput || !emailInput.includes("@")) { 
+                msgBox.style.display = "none"; 
+                return; 
+            }
+
+            fetch(`/api/check-email?email=${emailInput}`)
+            .then(res => res.json())
+            .then(data => {
+                msgBox.style.display = "block"; 
+                
+                // ✅ [수정됨] available(사용 가능)이 false(거짓)라면? -> 중복된 이메일!
+                if (data.available === false) {
+                    msgBox.style.color = "#EF4444"; // 빨간색
+                    msgBox.innerText = "사용 중이거나 탈퇴한 이메일입니다.";
+                } 
+                // ✅ available이 true라면? -> 쓸 수 있는 새 이메일!
+                else {
+                    msgBox.style.color = "#10B981"; // 초록색
+                    msgBox.innerText = "사용 가능한 이메일입니다!";
+                }
+            });
+        }
+    </script>
+</body>
+</html>
