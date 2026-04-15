@@ -181,16 +181,20 @@
                     </div>
                 </div>
                 
-                <div class="input-group" style="flex-direction: column;">    
-                    <div style="display: flex; align-items: center; justify-content: center; width: 100%;">
-                        <label for="pw-new">새 비밀번호</label>
+                <div class="input-group">
+                    <label for="pw-new">새 비밀번호</label>
+                    
+                    <div style="display: flex; flex-direction: column;">
+                        
                         <div class="password-wrapper">
                             <input type="password" id="pw-new" oninput="checkPasswordMatch()">
                             <span class="eye-icon" onclick="togglePassword('pw-new', this)">👁️</span>
                         </div>
-                    </div>
-                    <div id="pw-length-error" style="color: #EF4444; font-size: 12px; display: none; margin-top: 5px; width: 100%; text-align: center;">
-                        비밀번호가 너무 쉽습니다! (8자 이상)
+                        
+                        <div id="pw-length-error" style="color: #EF4444; font-size: 12px; display: none; margin-top: 5px; text-align: left; padding-left: 2px;">
+                            비밀번호가 너무 쉽습니다! (8자 이상)
+                        </div>
+                        
                     </div>
                 </div>
                 
