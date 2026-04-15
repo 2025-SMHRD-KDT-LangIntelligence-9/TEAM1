@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToneGuard 마이페이지</title>
+    <style>
+        /* [1] 색상 팔레트 (테마 관리) */
+        :root {
+            --header-w: #FFFFFF; 
+            --bg-sub: #F4F7FA;   
+            --text-d: #2C3E50;   
+            --success-m: #10B981;
+            --primary-b: #3B82F6;
+            --danger-p: #F43F5E; 
+            --border-c: #E2E8F0; 
+        }
+
+        /* [2] 기본 레이아웃 및 폰트 설정 */
+        body { 
+            font-family: '맑은 고딕', sans-serif; 
+            background: var(--bg-sub); 
+            margin: 0; color: var(--text-d); 
+            display: flex; flex-direction: column; min-height: 100vh; 
+        }
+
+        /* [3] 상단 헤더 영역 */
+        header { 
+            background: var(--header-w); height: 80px; display: flex; 
+            justify-content: space-between; align-items: center; 
+            padding: 0 40px; border-bottom: 1px solid var(--border-c); 
+        }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .greeting { font-size: 18px; font-weight: bold; }
+        
+        .btn-back { 
+            padding: 8px 15px; border: 1px solid var(--border-c); border-radius: 8px; 
+            color: var(--text-d); text-decoration: none; font-size: 14px; font-weight: bold; 
+            transition: 0.2s; 
+        }
+        .btn-back:hover { background: #F8FAFC; }
+
+        /* [4] 메인 콘텐츠 영역 */
+        .container { display: flex; flex: 1; padding: 30px 40px; gap: 20px; }
+
+        .sidebar { 
+            background: var(--header-w); width: 230px; border-radius: 20px; 
+            border: 1px solid var(--border-c); padding: 30px 15px; 
+        }
+        .sidebar-title { color: var(--primary-b); font-size: 12px; font-weight: bold; margin-bottom: 15px; padding-left: 10px; }
+        .menu-btn { 
+            display: block; width: 100%; text-align: left; background: transparent; 
+            border: none; padding: 15px 10px; font-size: 15px; font-weight: bold; 
+            color: var(--text-d); border-radius: 10px; cursor: pointer; transition: 0.2s; 
+        }
+        .menu-btn:hover { background: var(--bg-sub); }
+
+        .content { 
+            background: var(--header-w); flex: 1; border-radius: 20px; 
+            border: 1px solid var(--border-c); padding: 50px; position: relative; 
+        }
+        
+        /* 뷰 전환 처리 */
+        .view-section { display: none; text-align: center; }
+        .view-section.active { display: block; }
+
+        /* [5] 카드 및 버튼 디자인 */
+        .history-card { 
+            background: var(--bg-sub); border: 1px solid var(--border-c); 
+            border-radius: 15px; padding: 20px; margin-bottom: 15px; text-align: left; 
+        }
+        .history-card span { color: var(--success-m); font-weight: bold; display: block; margin-bottom: 10px; }
+
+        .btn-large { 
+            width: 240px; height: 65px; border-radius: 15px; border: none; 
+            font-size: 16px; font-weight: bold; cursor: pointer; margin: 10px auto; 
+            display: block; transition: 0.2s; 
+        }
+        .btn-success { background: var(--success-m); color: white; border-radius: 30px; height: 55px; }
+        .btn-danger { background: var(--danger-p); color: white; border-radius: 30px; height: 55px; }
+
+        .input-group { display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
+        .input-group label { width: 140px; text-align: right; margin-right: 15px; font-weight: bold; }
+
+        .password-wrapper { position: relative; display: inline-block; width: 240px; }
+        .password-wrapper input { 
+            width: 100%; height: 48px; border-radius: 12px; border: 1px solid var(--border-c); 
+            background: var(--bg-sub); padding: 0 45px 0 15px; box-sizing: border-box; 
+        }
+        .eye-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 18px; color: #94A3B8; user-select: none; }
+        
+        #pw-match-error { color: var(--danger-p); font-size: 12px; font-weight: bold; margin-top: 5px; display: none; margin-left: 155px; }
+        
+        /* [추가] 토글 스위치 디자인 */
+        .toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #CBD5E1; transition: .3s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        input:checked + .slider { background-color: #10B981; }
+        input:checked + .slider:before { transform: translateX(20px); }
+        /* [추가] 개별 기록 삭제 버튼 디자인 */
+        .history-card { position: relative; } /* 삭제 버튼의 기준점이 되도록 설정 */
+        
+        .btn-delete-history {
+            position: absolute; top: 15px; right: 15px;
+            background: transparent; color: #94A3B8; border: 1px solid #CBD5E1;
+            padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold;
+            cursor: pointer; transition: 0.2s;
+        }
+        .btn-delete-history:hover {
+            background: #FEE2E2; color: #EF4444; border-color: #FCA5A5; /* 마우스 올리면 빨간색 경고 */
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <img src="{{ url_for('static', path='/logo.png') }}" alt="Logo" height="50">
+            <span class="greeting">반갑습니다, {{ user_name }}님</span>
+        </div>
+        <a href="/" class="btn-back">메인으로 돌아가기</a>
+    </header>
+
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-title">MY MENU</div>
+            <button class="menu-btn" onclick="showView('history-view'); loadHistory();">📜 나의 교정 기록</button>
+            <button class="menu-btn" onclick="showView('settings-view')">⚙️ 설정 및 관리</button>
+        </div>
+
+        <div class="content">
+            
+            <div id="default-view" class="view-section active">
+                <h1 style="color: var(--border-c); font-size: 50px; margin-top: 20%;">ToneGuard</h1>
+                <p style="color: #64748B;">좌측 메뉴를 선택해 주세요.</p>
+            </div>
+
+            <div id="history-view" class="view-section">
+                <h2 style="text-align: left; margin-bottom: 20px;">나의 교정 기록</h2>
+                <div id="history-list">
+                    <p style="color: #64748B;">기록을 불러오는 중...</p>
+                </div>
+            </div>
+
+            <div id="settings-view" class="view-section">
+                <div style="max-width: 350px; margin: 40px auto 0 auto;">
+                    
+                    <button class="btn-submit" onclick="showView('edit-view')" style="width: 100%; margin-bottom: 12px; height: 50px; font-size: 16px; border-radius: 8px; border: 1px solid #CBD5E1; background: white; cursor: pointer;">
+                        👤 정보 수정
+                    </button>
+                    
+                    <button onclick="showView('withdraw-view')" 
+                            style="width: 100%; padding: 14px; background: #FFF1F2; color: #E11D48; border: 1px solid #FECDD3; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s;">
+                        ⚠️ 탈퇴
+                    </button>
+
+                    <div style="margin-top: 35px; padding-top: 25px; border-top: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="text-align: left;">
+                            <div style="font-size: 15px; font-weight: bold; color: #1E293B;">대화 기록 저장 동의</div>
+                            <div style="font-size: 12px; color: #64748B; margin-top: 4px;">AI 품질 향상을 위해 텍스트를 저장합니다.</div>
+                        </div>
+                        
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="consent_toggle" onchange="updateConsent()" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="edit-view" class="view-section">
+                <h2 style="color: var(--success-m); margin-bottom: 40px;">비밀번호 변경</h2>
+
+                <div class="input-group">
+                    <label>기존 비밀번호</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="pw-old"> 
+                        <span class="eye-icon" onclick="togglePassword('pw-old', this)">👁️</span>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="pw-new">새 비밀번호</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="pw-new" oninput="checkPasswordMatch()">
+                        <span class="eye-icon" onclick="togglePassword('pw-new', this)">👁️</span>
+                    </div>
+                </div>
+                
+                <div class="input-group" style="flex-direction: column;">
+                    <div style="display: flex; align-items: center; justify-content: center; width: 100%;">
+                        <label for="pw-confirm">새 비밀번호 확인</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="pw-confirm" oninput="checkPasswordMatch()">
+                            <span class="eye-icon" onclick="togglePassword('pw-confirm', this)">👁️</span>
+                        </div>
+                    </div>
+                    <div id="pw-match-error">새 비밀번호가 일치하지않습니다. 확인해주세요</div>
+                </div>
+
+                <button class="btn-large btn-success" style="margin-top: 30px;" onclick="submitPasswordChange()">변경 완료</button>
+            </div>
+
+            <div id="withdraw-view" class="view-section">
+                <h2 style="color: var(--danger-p); margin-top: 100px;">회원 탈퇴</h2>
+                <p>탈퇴하시면 모든 데이터가 삭제되며 복구할 수 없습니다.<br>정말로 떠나시겠습니까?</p>
+                <button class="btn-large btn-danger" style="margin-top: 40px;" onclick="confirmWithdraw()">탈퇴 확인</button>
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        // [기능 1] 사이드바 탭 전환 및 인사말 변경 함수
+        function showView(viewId) {
+            // 1. 클릭한 화면 띄워주기
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+
+            // 2. [추가됨] 탭을 이동하면 헤더의 인사말을 심플하게 'OO님'으로 바꿉니다.
+            const greetingElement = document.querySelector('.greeting');
+            if (greetingElement) {
+                // 파이썬(Jinja2)이 넘겨준 이름을 그대로 사용하여 텍스트를 덮어씁니다.
+                greetingElement.innerText = "{{ user_name }}님";
+            }
+        }
+
+        function togglePassword(inputId, iconElement) {
+            const passwordInput = document.getElementById(inputId);
+            if (!passwordInput || passwordInput.type === "text") return;
+
+            passwordInput.type = "text";     
+            iconElement.innerText = "👁️‍🗨️"; 
+
+            setTimeout(() => {
+                passwordInput.type = "password";
+                iconElement.innerText = "👁️"; 
+            }, 1500); 
+        }
+
+        function checkPasswordMatch() {
+            const pwNew = document.getElementById('pw-new').value;
+            const pwConfirm = document.getElementById('pw-confirm').value;
+            const errorMsg = document.getElementById('pw-match-error');
+
+            if (pwConfirm.length > 0 && pwNew !== pwConfirm) {
+                errorMsg.style.display = 'block';
+            } else {
+                errorMsg.style.display = 'none';
+            }
+        }
+
+        function loadHistory() {
+            const listContainer = document.getElementById('history-list');
+            listContainer.innerHTML = '<p style="color: #64748B;">기록을 불러오는 중...</p>';
+            
+            fetch('/api/history') 
+                .then(response => response.json())
+                .then(data => {
+                    listContainer.innerHTML = ''; 
+                    
+                    if (!data.history || data.history.length === 0) {
+                        listContainer.innerHTML = '<p>기록이 없습니다.</p>';
+                        return;
+                    }
+
+                    data.history.forEach(item => {
+                        const card = document.createElement('div');
+                        card.className = 'history-card';
+                        
+                        const tone = item.tone_type || item.context_type || '교정';
+                        const original = item.original || item.upload_text || '원문 없음';
+                        const corrected = item.corrected || item.corr_text || '교정문 없음';
+                        
+                        // 🌟 [핵심] 백엔드가 주는 기록의 고유 번호(id)를 가져옵니다.
+                        const historyId = item.id || item.history_id; 
+
+                        // 삭제 버튼 코드가 맨 위에 한 줄 추가되었습니다!
+                        card.innerHTML = `
+                            <button class="btn-delete-history" onclick="deleteHistoryItem(${historyId})">삭제</button>
+                            <span>[${tone}]</span>
+                            <p style="margin-bottom: 5px;">원문: ${original}</p>
+                            <p style="font-weight:bold; color: #1E293B;">교정: ${corrected}</p>
+                        `;
+                        listContainer.appendChild(card);
+                    });
+                })
+                .catch(err => {
+                    listContainer.innerHTML = '<p style="color:red;">서버 통신 오류가 발생했습니다.</p>';
+                    console.error("History fetch error:", err);
+                });
+        }
+
+        function submitPasswordChange() {
+            const pwOld = document.getElementById('pw-old').value; 
+            const pwNew = document.getElementById('pw-new').value; 
+            const pwConfirm = document.getElementById('pw-confirm').value;
+
+            if (!pwOld) { alert("기존 비밀번호를 입력해주세요."); return; }
+            if (!pwNew) { alert("새 비밀번호를 입력해주세요."); return; }
+            
+            if (pwNew !== pwConfirm) {
+                alert("새 비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
+                return;
+            }
+
+            fetch('/api/update-password', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ current_password: pwOld, new_password: pwNew })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert("비밀번호가 성공적으로 변경되었습니다.");
+                    document.getElementById('pw-old').value = "";
+                    document.getElementById('pw-new').value = "";
+                    document.getElementById('pw-confirm').value = "";
+                    document.getElementById('pw-match-error').style.display = 'none';
+                } else {
+                    alert("오류: " + (data.message || "변경에 실패했습니다."));
+                }
+            })
+            .catch(err => alert("서버 연결 실패: " + err));
+        }
+        
+        function confirmWithdraw() {
+            if(confirm("확실히 탈퇴를 하시겠습니까?\n이 작업은 되돌릴 수 없습니다.")) {
+                fetch('/api/delete-account', { method: 'DELETE' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert("회원 탈퇴가 완료되었습니다. 그동안 이용해 주셔서 감사합니다.");
+                        window.location.href = "/"; 
+                    } else {
+                        alert("오류: " + (data.message || "탈퇴 처리에 실패했습니다."));
+                    }
+                })
+                .catch(err => alert("서버 연결 실패: " + err));
+            }
+        }
+
+        window.onload = function() {
+            loadHistory();
+        };
+
+        function updateConsent() {
+            const isAgreed = document.getElementById("consent_toggle").checked;
+
+            fetch("/api/update-consent", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ consent: isAgreed })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === "success") {
+                    console.log("✅ 저장 동의 상태가 변경되었습니다:", isAgreed);
+                } else {
+                    alert("설정 변경에 실패했습니다. 다시 시도해주세요.");
+                    document.getElementById("consent_toggle").checked = !isAgreed; 
+                }
+            })
+            .catch(err => {
+                console.error("통신 오류:", err);
+                document.getElementById("consent_toggle").checked = !isAgreed; 
+            });
+        }
+        // [추가] 특정 교정 기록을 삭제하는 함수
+        function deleteHistoryItem(itemId) {
+            // 방어 코드: 만약 백엔드에서 id 번호를 주지 않았다면 오류를 막습니다.
+            if (!itemId) {
+                alert("이 기록은 아직 삭제할 수 없습니다. (ID 값 없음)");
+                return;
+            }
+
+            if (confirm("이 기록을 정말 삭제하시겠습니까?")) {
+                fetch(`/api/history/${itemId}`, {
+                    method: 'DELETE'
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // 삭제 성공 시! 새로고침할 필요 없이 기록만 다시 불러와서 그려줍니다.
+                        loadHistory(); 
+                    } else {
+                        alert("오류: " + (data.message || "삭제에 실패했습니다."));
+                    }
+                })
+                .catch(err => alert("서버 연결 실패: " + err));
+            }
+        }
+    </script>
+</body>
+</html>
