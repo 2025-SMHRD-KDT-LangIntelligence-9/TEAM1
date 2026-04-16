@@ -1123,7 +1123,7 @@
                     <span class="setting-desc">AI의 품질 향상을 위해 텍스트를 저장합니다.</span>
                 </div>
                 <label class="switch">
-                    <input type="checkbox" id="consentCheckbox" onchange="updateConsent()">
+                    <input type="checkbox" id="consentCheckbox" onchange="updateConsent()" {% if is_consented %}checked{% endif %}>
                     <span class="slider round"></span>
                 </label>
             </div>
