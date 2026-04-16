@@ -9,1464 +9,388 @@
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     
     <style>
-        /* [1] 색상 팔레트 설정: 전역 변수를 사용하여 색상을 일관되게 관리합니다. */
+        /* [1] 전역 변수 및 기본 설정 */
         :root {
-            --header-w: #FFFFFF;
-            /* 흰색 배경 */
-            --bg-sub: #F4F7FA;
-            /* 연한 회색 배경 */
-            --text-d: #1E293B;
-            /* 기본 글자색 */
-            --success-m: #1E293B;
-            /* 성공/안내 초록색 */
-            --primary-b: #84b1ec;
-            /* 주요 포인트 파란색 */
-            --danger-p: #F43F5E;
-            /* 경고/탈퇴 빨간색 */
-            --border-c: #a5cee9;
-            /* 테두리 연한 회색 */
-            --navy-main: #1E293B;
-            --navy-hover: #0F172A;
-            --content-white: #ffffff;
+            --header-w: #FFFFFF; --bg-sub: #F4F7FA; --text-d: #1E293B;
+            --primary-b: #84b1ec; --danger-p: #F43F5E; --border-c: #a5cee9;
+            --navy-main: #1E293B; --navy-hover: #0F172A;
         }
 
-        /* [2] 기본 레이아웃: 화면 전체를 채우는 유연한 박스 설정 */
         body {
-            margin: 0;
-            color: var(--text-d);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+            margin: 0; color: var(--text-d); display: flex; flex-direction: column; min-height: 100vh;
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background: var(--bg-sub);
         }
 
-        /* [수정 위치] 기존 'header' 스타일 블록을 찾아 아래로 교체하세요 */
+        /* [2] 헤더 & 사이드바 디자인 */
         header {
-            background: var(--header-w);
-            height: 100px;
-            /* 높이를 100px로 조정 */
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            /* 로고와 홈 버튼의 높이를 중앙으로 맞춤 */
-            padding: 0 60px;
-            /* 좌우 여백 설정 */
+            background: var(--header-w); height: 100px; display: flex;
+            justify-content: space-between; align-items: center; padding: 0 60px;
             border-bottom: 1px solid var(--border-c);
         }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-        }
-
-
-        /* [교체] 생동감 있는 뱃지 형태의 인사말 스타일 */
-        /* [교체] 볼록한 3D 입체감의 인사말 스타일 */
+        .header-left { display: flex; align-items: center; gap: 30px; }
         .greeting {
-            font-size: 20px;
-            font-weight: 600;
-            color: #1e293b;
-            /* 가독성을 위해 살짝 더 진한 색상 */
-
-            /* [3D 핵심 1] 그라데이션으로 볼록한 느낌 부여 */
-            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
-
-            padding: 11px 28px;
-            /* 조금 더 부피감 있게 */
-            border-radius: 30px;
-            /* 더 둥근 알약 형태 */
-            border: 1px solid rgba(226, 232, 240, 0.7);
-            /* 테두리를 조금 더 연하고 투명하게 */
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            /* 아이콘과 글자 사이 간격 확대 */
-
-            /* [3D 핵심 2] 강하고 부드러운 다중 그림자로 실제 물건처럼 배치 */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02),
-                0 1px 3px rgba(0, 0, 0, 0.05),
-                inset 0 1px 1px rgba(255, 255, 255, 0.7);
-            /* 내부 하이라이트로 빛 반사 효과 */
-
-            animation: popIn 0.8s ease-out forwards;
-            /* [추가] 나타날 때 부드럽게 팝업 */
+            font-size: 20px; font-weight: 600; background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+            padding: 11px 28px; border-radius: 30px; border: 1px solid rgba(226, 232, 240, 0.7);
+            display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+            animation: popIn 0.8s ease-out;
         }
-
-        /* 유저 이름 포인트 컬러 */
-        .name-highlight {
-            color: var(--primary-b);
-            /* 기존에 설정한 파란색 포인트 컬러 적용 */
-            font-weight: 800;
-            /* 이름만 더 두껍게 */
-        }
-
-        /* [교체] 아이콘 버튼 전용 스타일 (정사각형/원형) */
-        /* [수정 위치] <style> 태그 안쪽 */
-
         .btn-home-circle {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 45px;
-            /* 버튼 크기 */
-            height: 45px;
-            text-decoration: none;
-
-            /* [핵심] 원형 스타일 및 테두리 */
-            background: #ffffff;
-            border: 2px solid #84b1ec;
-            /* 이미지와 유사한 하늘색 테두리 */
-            border-radius: 50%;
-            /* 완벽한 원형 */
-            color: #202d3a;
-            /* 집 아이콘 색상 */
-
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            width: 45px; height: 45px; border: 2px solid var(--primary-b); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; text-decoration: none; transition: 0.3s;
         }
+        .btn-home-circle:hover { transform: scale(1.1); box-shadow: 0 4px 10px rgba(132, 177, 236, 0.3); }
 
-        .btn-home-circle .material-symbols-outlined {
-            font-size: 24px;
-            /* 아이콘 두께 및 스타일 미세 조정 */
-            font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
-        }
-
-        /* 마우스 올렸을 때 효과 */
-        .btn-home-circle:hover {
-            background: #f0f7ff;
-            transform: scale(1.1);
-            box-shadow: 0 4px 10px rgba(132, 177, 236, 0.3);
-        }
-
-        /* 마우스 올렸을 때 효과 */
-        .btn-back:hover {
-            background: var(--primary-b);
-            color: white;
-            border-color: var(--primary-b);
-            transform: translateY(-3px);
-            /* 위로 살짝 들리는 효과 */
-            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
-            /* 푸른색 그림자 강조 */
-        }
-
-
-        /* [4] 메인 컨테이너: 사이드바와 콘텐츠를 가로로 배치 */
-        .container {
-            display: flex;
-            flex: 1;
-            padding: 30px 40px;
-            gap: 20px;
-        }
-
-        /* 좌측 사이드바 디자인 */
-        /* [교체] 요즘 감성 사이드바 스타일 */
-        /* [수정 위치] .sidebar 클래스 찾기 */
-        .sidebar {
-            background: var(--header-w);
-            width: 250px;
-            border-radius: 24px;
-            border: 1px solid rgba(0, 0, 0, 0.05);
-
-            /* 패딩 조정: 상단(40px) 좌우(15px) 하단(25px) */
-            padding: 40px 15px 25px 15px;
-
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
-        }
-
-        .sidebar-title {
-            color: #94A3B8;
-            font-size: 25px;
-            font-weight: 800;
-            letter-spacing: 1.5px;
-            margin-bottom: 25px;
-            padding-left: 15px;
-            text-transform: uppercase;
-        }
-
+        .container { display: flex; flex: 1; padding: 30px 40px; gap: 20px; }
+        .sidebar { background: #fff; width: 250px; border-radius: 24px; padding: 40px 15px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03); }
         .menu-btn {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-            background: transparent;
-            border: none;
-            padding: 16px 18px;
-            font-size: 18px;
-            font-weight: 600;
-            color: #1E293B;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 8px;
+            width: 100%; padding: 16px 18px; border: none; background: transparent;
+            font-size: 18px; font-weight: 600; border-radius: 16px; cursor: pointer;
+            display: flex; align-items: center; gap: 12px; transition: 0.3s;
         }
+        .menu-btn:hover { background: #EFF6FF; color: var(--primary-b); transform: translateX(5px); }
+        .menu-btn.active { background: var(--primary-b); color: white; }
+        .content { background: #fff; flex: 1; border-radius: 20px; border: 1px solid var(--border-c); padding: 50px; position: relative; }
 
-        .menu-btn:hover {
-            background: #EFF6FF;
-            color: var(--primary-b);
-            transform: translateX(5px);
-        }
-
-        /* 현재 선택된 메뉴 강조 스타일 */
-        .menu-btn.active {
-            background: var(--primary-b);
-            color: white;
-        }
-
-        /* 우측 콘텐츠 영역 디자인 */
-        .content {
-            background: var(--header-w);
-            flex: 1;
-            border-radius: 20px;
-            border: 1px solid var(--border-c);
-            padding: 50px;
-            position: relative;
-        }
-
-
-
-        /* [수정] 기본 뷰 섹션을 중앙 정렬하고 배경 로고를 삽입 */
-        #default-view {
-            display: none;
-            /* 기본값 */
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            /* 부모 높이를 꽉 채움 */
-
-            /* 배경 설정 */
-            background-image: url("{{ url_for('static', path='/logo.png') }}");
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: 400px;
-            /* 로고 크기 조절 */
-            opacity: 0.15;
-            /* 로고 투명도 (0.1 ~ 0.3 권장) */
-        }
-
-        #default-view.active {
-            display: flex;
-            /* active 시 flex로 변경하여 중앙 정렬 유지 */
-        }
-
-
-        /* [SPA 방식] 뷰 섹션 숨김/표시 처리 */
-        .view-section {
-            display: none;
-            text-align: center;
-        }
-
-        .view-section.active {
-            display: block;
-        }
-
-        /* [교정 기록 리스트형 디자인 - 다이어트 버전] */
-        #history-list {
-            display: flex;
-            flex-direction: column;
-            gap: 4px; /* 카드 사이 간격을 타이트하게 */
-        }
-
+        /* [3] 교정 기록 리스트 디자인 (다이어트 버전) */
+        #history-list { display: flex; flex-direction: column; gap: 4px; }
         .history-card {
-            position: relative;
-            background: #ffffff;
-            border: 1px solid #eef2f6;
-            border-radius: 12px; /* 모서리를 조금 더 샤프하게 */
-            padding: 6px 20px; /* 내부 여백 대폭 축소 */
-            display: flex; /* 가로 배치 */
-            align-items: center;
-            gap: 15px;
-            transition: all 0.2s ease;
-            min-height: 40px; /* 높이 고정으로 10개 정렬 유지 */
-            text-align: left;
+            background: #ffffff; border: 1px solid #eef2f6; border-radius: 12px;
+            padding: 6px 20px; display: flex; align-items: center; gap: 15px;
+            transition: 0.2s; min-height: 45px; text-align: left;
         }
-
-        .history-card:hover {
-            background: #f8fafc;
-            transform: translateX(5px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-
-        /* 1. 카테고리 뱃지 공통 스타일 */
-        .tone-badge {
-            min-width: 80px;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 800;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-        }
-
-        /* 2. 텍스트 영역 (가로 분할) */
-        .history-info {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            font-size: 13.5px; /* 글자 크기 살짝 축소 */
-        }
-
-        .text-item {
-            flex: 1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis; /* 너무 길면 ... 처리 */
-            text-align: left;
-        }
-
-        .label-mini {
-            font-weight: 800;
-            color: #94a3b8;
-            margin-right: 8px;
-            font-size: 11px;
-        }
-
-        /* 3. 카테고리별 포인트 컬러 및 애니메이션 */
-
-        /* [업무] - 파란색 + 스위프 효과 */
+        .history-card:hover { transform: translateX(5px); background: #f8fafc; }
+        .tone-badge { min-width: 85px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 4px; }
+        
+        /* 카테고리별 컬러 및 애니메이션 */
         .cat-business { background: #eff6ff; color: #3b82f6; border: 1px solid #dbeafe; }
-        .history-card.cat-business:hover .tone-badge { animation: sweep 0.6s ease-in-out; }
-
-        /* [의견충돌] - 주황/빨강 + 펄스 효과 */
+        .history-card.cat-business:hover .tone-badge { animation: sweep 0.6s ease; }
         .cat-conflict { background: #fff1f2; color: #f43f5e; border: 1px solid #ffe4e6; }
         .history-card.cat-conflict:hover .tone-badge { animation: pulse-mini 0.6s infinite; }
-
-        /* [피드백] - 초록색 + 바운스 효과 */
         .cat-feedback { background: #f0fdf4; color: #22c55e; border: 1px solid #dcfce7; }
         .history-card.cat-feedback:hover .tone-badge { animation: bounce-mini 0.5s ease; }
-
-        /* [일상] - 노란색 + 플로팅 효과 */
         .cat-daily { background: #fefce8; color: #eab308; border: 1px solid #fef9c3; }
-        .history-card.cat-daily:hover .tone-badge { animation: floating 1.5s ease-in-out infinite; }
-
-        /* [사과] - 보라색 + 고개숙임 효과 */
+        .history-card.cat-daily:hover .tone-badge { animation: floating 1.5s infinite; }
         .cat-apology { background: #faf5ff; color: #a855f7; border: 1px solid #f3e8ff; }
         .history-card.cat-apology:hover .tone-badge { animation: bowing 0.6s ease; }
 
-        /* [애니메이션 정의] */
-        @keyframes sweep { 0% { opacity: 0.7; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } 100% { opacity: 1; transform: scale(1); } }
+        .history-info { flex: 1; display: flex; align-items: center; gap: 20px; font-size: 13.5px; overflow: hidden; }
+        .text-item { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; }
+        .label-mini { font-weight: 800; color: #94a3b8; margin-right: 8px; font-size: 11px; }
+        .delete-btn-mini { background: none; border: none; color: #cbd5e1; cursor: pointer; font-size: 18px; transition: 0.2s; }
+        .delete-btn-mini:hover { color: var(--danger-p); }
+
+        /* [4] 입력창 및 버튼 디자인 */
+        .input-group { display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
+        .input-group label { width: 140px; text-align: right; margin-right: 15px; font-weight: bold; }
+        .password-wrapper { position: relative; width: 240px; }
+        .password-wrapper input { width: 100% !important; height: 48px; padding: 0 45px 0 15px; border: 1px solid #CBD5E1; border-radius: 12px; box-sizing: border-box; background: #fff; transition: 0.3s; }
+        .eye-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #94A3B8; font-size: 18px; user-select: none; z-index: 10; }
+
+        .btn-large { width: 100%; max-width: 420px; height: 70px; border-radius: 20px; border: none; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; transition: 0.3s; margin: 0 auto; }
+        .btn-blue { background: #84b1ec; color: white; }
+        .btn-navy { background: var(--navy-main) !important; color: white !important; }
+        .btn-danger-outline { background: #FFF1F2; color: #F43F5E; border: 2px solid #F43F5E; }
+
+        .view-section { display: none; text-align: center; }
+        .view-section.active { display: block; }
+        #default-view.active { display: flex; height: 100%; justify-content: center; align-items: center; background: url("{{ url_for('static', path='/logo.png') }}") no-repeat center / 400px; opacity: 0.15; }
+
+        /* [5] 애니메이션 */
+        @keyframes popIn { 0% { opacity: 0; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes sweep { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         @keyframes pulse-mini { 0% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(244, 63, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); } }
         @keyframes bounce-mini { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
         @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
-        @keyframes bowing { 0% { transform: translateY(0); } 50% { transform: translateY(3px) rotate(2deg); } 100% { transform: translateY(0); } }
-
-        /* 삭제 버튼 콤팩트화 */
-        .delete-btn-mini {
-            background: none; border: none; color: #cbd5e1; cursor: pointer; font-size: 16px; transition: 0.2s;
-        }
-        .delete-btn-mini:hover { color: #f43f5e; }
-
-        /* 각종 버튼 및 입력창 디자인 */
-        .btn-large {
-            width: 100%;
-            /* [부모 너비에 맞춤] */
-            max-width: 420px;
-            /* [이미지와 같은 최대 너비 설정] */
-            height: 70px;
-            /* [이미지처럼 더 두툼하게] */
-            border-radius: 20px;
-            /* [둥글기를 더 부드럽게] */
-            border: none;
-            font-size: 16px;
-            font-weight: 700;
-            /* [글씨를 조금 더 볼드하게] */
-            cursor: pointer;
-            margin: 0 auto;
-            /* [중앙 정렬] */
-            display: flex;
-            /* [아이콘과 텍스트 가로 정렬] */
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            /* [아이콘과 텍스트 사이 간격] */
-            transition: 0.3s;
-        }
-
-        /* 2. '정보 수정' 버튼 (스카이 블루) 스타일 */
-        .btn-blue {
-            background: #84b1ec;
-            /* [이미지의 스카이 블루 색상 적용] */
-            color: white;
-        }
-
-        .btn-blue:hover {
-            background: #64a1ec;
-            /* [호버 시 더 짙은 색으로] */
-        }
-
-        .btn-navy {
-            background: var(--navy-main) !important;
-            color: white !important;
-            transition: 0.3s;
-        }
-
-        .btn-navy:hover {
-            background: var(--navy-hover) !important;
-        }
-
-        /* 3. '탈퇴' 버튼 (핑크 배경/레드 테두리) 스타일 */
-        .btn-danger-outline {
-            background: #FFF1F2;
-            /* [이미지의 연한 핑크 배경 적용] */
-            color: #F43F5E;
-            /* [진한 빨간색 글자색] */
-            border: 2px solid #F43F5E;
-            /* [테두리 추가 및 색상 지정] */
-        }
-
-        .btn-danger-outline:hover {
-            background: #FEE2E2;
-            /* [호버 시 더 짙은 핑크색으로] */
-        }
-
-        .btn-success {
-            background: var(--success-m);
-            color: white;
-            border-radius: 30px;
-            height: 55px;
-        }
-
-        .btn-danger {
-            background: var(--danger-p);
-            color: white;
-            border-radius: 30px;
-            height: 55px;
-        }
-
-        .input-group {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 15px;
-        }
-
-        .input-group label {
-            width: 140px;
-            text-align: right;
-            margin-right: 15px;
-            font-weight: bold;
-        }
-
-        /* [핵심] 비밀번호 입력창 내부 아이콘 배치 설정 */
-        .password-wrapper {
-            position: relative;
-            display: inline-block;
-            width: 240px;
-        }
-
-        .password-wrapper input {
-            width: 100% !important;
-            height: 48px;
-            padding: 0 45px 0 15px;
-            border: 1px solid #CBD5E1;
-            /* [이미지와 맞게 테두리색 미세 조정] */
-            border-radius: 12px;
-            box-sizing: border-box;
-            font-size: 14px;
-            background: var(--content-white);
-            /* [핵심] 배경을 흰색으로 변경 */
-            transition: 0.3s;
-        }
-
-        /* 눈 아이콘: 입력창 위에 겹쳐서 배치 */
-        .eye-icon {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            font-size: 18px;
-            color: #94A3B8;
-            user-select: none;
-            z-index: 10;
-        }
-
-        .eye-icon:hover {
-            color: #3B82F6;
-        }
-
-
-        /* 아이콘 크기와 정렬을 맞추기 위한 스타일 */
-        .material-symbols-outlined {
-            font-size: 20px;
-            vertical-align: middle;
-            display: inline-block;
-        }
-
-        /* ------------------------------------------------ */
-        /* [추가] 메뉴 아이콘 움직임 애니메이션 설정 */
-        /* ------------------------------------------------ */
-
-        /* 1. 펜으로 글씨를 쓰는 듯한 까딱까딱 모션 */
-        @keyframes writeMotion {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            25% {
-                transform: rotate(-15deg);
-            }
-
-            75% {
-                transform: rotate(10deg);
-            }
-
-            100% {
-                transform: rotate(0deg);
-            }
-        }
-
-        /* 2. 톱니바퀴가 돌아가는 회전 모션 */
-        @keyframes spinMotion {
-            from {
-                transform: rotate(0deg);
-            }
-
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-
-        .icon-history {
-
-            /* [핵심] 첨부 이미지와 동일한 연한 파란색 적용 */
-
-            color: #a7d1fd !important;
-
-
-
-            font-size: 24px !important;
-
-
-
-            /* [핵심] 내부를 가득 채워 첨부 이미지와 같은 볼륨감을 줌 */
-
-            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-
-        }
-
-
-
-        /* [추가/수정] 메뉴 호버 시 아이콘 색상을 흰색으로 반전시켜 가독성 확보 */
-
-        .menu-btn:hover .icon-history {
-
-            color: white !important;
-
-            transition: color 0.2s ease;
-
-        }
-
-
-
-        /* 2. 설정 아이콘 (세련된 슬레이트 그레이 계열) */
-
-        .icon-settings {
-
-            color: #475569;
-
-            font-size: 24px !important;
-
-            font-variation-settings: 'FILL' 1;
-
-        }
-
-
-
-        /* [추가] 메뉴 버튼 호버 시 아이콘 색상 변경 (흰색으로 반전) */
-
-        .menu-btn:hover .material-symbols-outlined {
-
-            color: white !important;
-
-            transition: color 0.2s ease;
-
-        }
-
-
-
-        /* [기존 애니메이션 유지 및 미세 조정] */
-
-        @keyframes writeMotion {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-3px);
-            }
-
-            /* 펜 대신 문서가 들썩이는 느낌 */
-
-        }
-
-
-
-        .menu-btn:hover .icon-history {
-
-            animation: writeMotion 0.5s ease infinite;
-
-        }
-
-
-
-        .menu-btn:hover .icon-settings {
-
-            animation: spinMotion 3s linear infinite;
-
-        }
-
-        /* ------------------------------------------------ */
-
-        /* [추가] 헤더 인사말 및 이모지 애니메이션 설정 */
-
-        /* ------------------------------------------------ */
-
-
-
-        /* 1. 인사말 박스가 왼쪽에서 스르륵 나타나는 효과 */
-
-        @keyframes slideInLeft {
-
-            0% {
-
-                opacity: 0;
-
-                transform: translateX(-30px);
-
-            }
-
-            100% {
-
-                opacity: 1;
-
-                transform: translateX(0);
-
-            }
-
-        }
-
-
-
-        /* 2. 손 흔드는 모션 (사람이 인사하는 것처럼) */
-
-        @keyframes waveHand {
-
-            0% {
-                transform: rotate(0deg);
-            }
-
-            10% {
-                transform: rotate(15deg);
-            }
-
-            20% {
-                transform: rotate(-10deg);
-            }
-
-            30% {
-                transform: rotate(15deg);
-            }
-
-            40% {
-                transform: rotate(-10deg);
-            }
-
-            50%,
-            100% {
-                transform: rotate(0deg);
-            }
-
-            /* 잠시 멈췄다가 다시 흔들기 */
-
-        }
-
-
-
-        /* 이모지에 손 흔들기 애니메이션 적용 */
-
-        .icon-wave {
-
-            display: inline-block;
-            /* 회전 효과를 주려면 필수 */
-
-            transform-origin: bottom center;
-            /* 손목(아래쪽 중앙)을 축으로 고정 */
-
-            animation: waveHand 2.5s infinite;
-            /* 2.5초마다 무한 반복 */
-
-        }
-
-
-
-        /* ------------------------------------------------ */
-
-        /* [추가] 입체 뱃지 및 글자 애니메이션 설정 */
-
-        /* ------------------------------------------------ */
-
-
-
-        /* 1. 뱃지가 퐁! 하고 나타나는 팝업 효과 */
-
-        @keyframes popIn {
-
-            0% {
-
-                opacity: 0;
-
-                transform: scale(0.9) translateY(10px);
-
-            }
-
-            100% {
-
-                opacity: 1;
-
-                transform: scale(1) translateY(0);
-
-            }
-
-        }
-
-
-
-        /* 2. 각 글자가 아래에서 위로 스르륵 나타나는 효과 */
-
-        @keyframes lettersReveal {
-
-            from {
-
-                opacity: 0;
-
-                transform: translateY(8px);
-
-            }
-
-            to {
-
-                opacity: 1;
-
-                transform: translateY(0);
-
-            }
-
-        }
-
-
-
-        /* 글자들을 감싸는 컨테이너 */
-
-        .letters {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 1px;
-
-        }
-
-
-
-        /* 각 글자에 애니메이션 기본 설정 적용 (HTML의 delay로 순서 조절) */
-
-        .letters span {
-
-            display: inline-block;
-
-            opacity: 0;
-            /* 처음엔 숨김 */
-
-            animation: lettersReveal 0.5s ease-out forwards;
-
-        }
-
-
-
-        /* 이름 포인트 컬러 미세 조정 (입체 뱃지와 어울리게) */
-
-        .greeting .name-highlight {
-
-            color: var(--primary-b);
-
-            font-weight: 800;
-
-            opacity: 0;
-            /* 처음엔 숨김 (animation으로 활성화) */
-
-        }
-
-
-
-        /* [수정 위치] <style> 태그 맨 마지막 부분 */
-
-
-
-        .view-header {
-
-            margin-bottom: 32px;
-
-            text-align: left;
-            /* 제목과 설명글을 왼쪽 정렬로 고정 */
-
-            padding-left: 5px;
-
-        }
-
-
-
-        .title-group {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 12px;
-
-            margin-bottom: 8px;
-
-        }
-
-
-
-        .title-icon {
-
-            font-size: 32px !important;
-
-            color: var(--primary-b);
-            /* 기존에 설정한 포인트 파란색 활용 */
-
-            vertical-align: middle; /* 아이콘 텍스트 높이 맞춤 */
-
-        }
-
-
-
-        .main-title {
-
-            font-size: 26px;
-
-            font-weight: 800;
-
-            color: #1E293B;
-
-            margin: 0;
-
-            letter-spacing: -0.5px;
-
-        }
-
-
-
-        .sub-title {
-
-            font-size: 15px;
-
-            color: #64748b;
-
-            margin: 0;
-
-            font-weight: 400;
-
-        }
-
-        /* [CSS 수정] 맨 마지막에 붙여넣으세요 */
-        .icon-history {
-            /* 1. 이미지와 동일한 꽉 찬 아이콘 스타일 강제 적용 */
-            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24 !important;
-
-            /* 2. 이미지의 연한 파란색 적용 */
-            color: #a7d1fd !important;
-
-            /* 3. 크기 조절 */
-            font-size: 24px !important;
-            display: inline-block;
-        }
-
-        /* 마우스 올렸을 때 흰색으로 변하는 효과 */
-        .menu-btn:hover .icon-history {
-            color: #ffffff !important;
-        }
-
-        /* [CSS 맨 아래에 추가] */
-        .material-symbols-outlined.icon-history {
-            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24 !important;
-            color: #a7d1fd !important;
-            /* 이미지와 동일한 연한 파란색 */
-            font-size: 24px !important;
-            display: inline-block !important;
-        }
-
-        /* 호버 시 색상 변경 안 된다면 이 코드도 추가 */
-        .menu-btn:hover .icon-history {
-            color: #ffffff !important;
-        }
-
-        h2.main-title {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--navy-main);
-            /* 다크 네이비 */
-            margin-bottom: 40px;
-            letter-spacing: -1px;
-        }
-
-        h2.settings-title {
-            font-size: 28px;
-            font-weight: 800;
-            color: #1E293B;
-            /* 다크 네이비 */
-            margin-bottom: 50px;
-            letter-spacing: -1px;
-        }
-
-        /* 수정 */
-
-        /* 1. 구분선 자체의 스타일 */
-        .divider {
-            border-top: 1px solid #eeeeee; /* 가느다란 회색 선 */
-            margin: 40px 0 40px 0;       /* 위(탈퇴버튼) 간격 60px, 아래(동의카드) 간격 40px */
-            width: 100%;                 /* 가로 꽉 차게 */
-        }
-
-        /* 설정 카드 전체 박스 */
-        .setting-card {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #f8f9fa; /* 연한 회색 배경 */
-            padding: 5px 35px;
-            border-radius: 20px;       /* 버튼과 맞춘 둥근 모서리 */
-            border: 1px solid #eee;
-        }
-
-        /* 텍스트 정보 영역 */
-        .setting-info {
-            display: flex;
-            flex-direction: column;
-            text-align: left;
-        }
-
-        .setting-title {
-            font-weight: bold;
-            font-size: 16px;
-            color: #333;
-        }
-
-        .setting-desc {
-            font-size: 12px;
-            color: #888;
-            margin-top: 4px;
-        }
-
-        /* 토글 스위치 디자인 */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 26px;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-        }
-
-        /* 체크되었을 때 색상 (상단 파란 버튼과 맞춤) */
-        input:checked + .slider {
-            background-color: #89b3ed; 
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(24px);
-        }
-
-        /* 둥근 스위치 모양 */
-        .slider.round {
-            border-radius: 34px;
-        }
-
-        .slider.round:before {
-            border-radius: 50%;
-        }
-
-
-        .section-divider {
-            border: 0;
-            height: 1px;
-            background: #eee;
-            margin-top: 60px; /* 구분선 위쪽 간격 */
-            margin-bottom: -40px; /* 아래 카드와의 간격을 조절 (숫자가 작을수록 카드와 가까워짐) */
-        }
-
+        @keyframes bowing { 0% { transform: translateY(0); } 50% { transform: translateY(3px); } 100% { transform: translateY(0); } }
+
+        /* 토글 스위치 */
+        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #89b3ed; }
+        input:checked + .slider:before { transform: translateX(24px); }
     </style>
-
 </head>
 
 <body>
-
     <header>
         <div class="header-left">
             <img src="{{ url_for('static', path='/logo2.png') }}" alt="Logo" height="100">
-
             <span class="greeting">
-                <span class="material-symbols-outlined icon-wave"
-                    style="color: #f59e0b; font-size: 30px;">front_hand</span>
-
-                <span class="letters">
-                    <span style="animation-delay: 0.1s">반</span>
-                    <span style="animation-delay: 0.2s">갑</span>
-                    <span style="animation-delay: 0.3s">습</span>
-                    <span style="animation-delay: 0.4s">니</span>
-                    <span style="animation-delay: 0.5s">다</span>
-                    <span style="animation-delay: 0.6s">, </span>
-                    <span class="name-highlight" style="animation-delay: 0.7s">{{ user_name }}</span>
-                    <span style="animation-delay: 0.8s">님</span>
-                    <span style="animation-delay: 0.9s">!</span>
-                </span>
+                <span class="material-symbols-outlined" style="color: #f59e0b; font-size: 30px;">front_hand</span>
+                반갑습니다, <span style="color:var(--primary-b); font-weight:800;">{{ user_name }}</span>님!
             </span>
-
         </div>
-        <a href="/" class="btn-home-circle" title="메인으로 돌아가기">
-            <span class="material-symbols-outlined">home</span>
-        </a>
-
+        <a href="/" class="btn-home-circle" title="메인으로 돌아가기"><span class="material-symbols-outlined">home</span></a>
     </header>
 
     <div class="container">
         <div class="sidebar">
-            <!-- <div class="sidebar-title">MY MENU</div> -->
-
             <button class="menu-btn" onclick="showView('history-view'); loadHistory();">
-                <span class="material-symbols-outlined icon-history">description</span> 나의 교정 기록
+                <span class="material-symbols-outlined">description</span> 나의 교정 기록
             </button>
-
             <button class="menu-btn" onclick="showView('settings-view')">
-                <span class="material-symbols-outlined icon-settings">manage_accounts</span> 설정 및 관리
+                <span class="material-symbols-outlined">manage_accounts</span> 설정 및 관리
             </button>
         </div>
 
         <div class="content">
-
-            <div id="default-view" class="view-section active">
-            </div>
+            <div id="default-view" class="view-section active"></div>
 
             <div id="history-view" class="view-section">
-                <div class="view-header">
-                    <div class="title-group">
-                        <span class="material-symbols-outlined title-icon">description</span>
-                        <h2 class="main-title" style="margin: 0;">나의 교정 기록</h2>
-                    </div>
-                    <p class="sub-title">Toneguard가 제안한 대화 기록들을 한눈에 확인해 보세요.</p>
+                <div style="text-align: left; margin-bottom: 30px;">
+                    <h2 style="font-size:26px; font-weight:800;">나의 교정 기록</h2>
+                    <p style="color: #64748b; font-size:15px;">Toneguard가 제안한 대화 기록들을 한눈에 확인해 보세요.</p>
                 </div>
-                
-                <div id="history-list">
-                    <p style="color: #64748B;">기록을 불러오는 중...</p>
-                </div>
-                
-                <div id="pagination-container" style="display: flex; justify-content: center; gap: 8px; margin-top: 25px; margin-bottom: 20px;">
-                </div>
+                <div id="history-list"></div>
+                <div id="pagination-container" style="display: flex; justify-content: center; gap: 8px; margin-top: 25px;"></div>
             </div>
 
-            <div id="settings-view" class="view-section"> <h2 class="settings-title">설정 및 관리</h2>
-
+            <div id="settings-view" class="view-section">
+                <h2 style="font-size:28px; font-weight:800; margin-bottom:40px;">설정 및 관리</h2>
                 <div style="display: flex; flex-direction: column; gap: 20px; align-items: center;">
-                    <button class="btn-large btn-blue" onclick="showView('edit-view')">
-                        <span class="material-symbols-outlined" style="font-size: 24px;">person</span> 정보 수정
-                    </button>
-
-                    <button class="btn-large btn-danger-outline" onclick="showView('withdraw-view')">
-                        <span class="material-symbols-outlined" style="font-size: 24px; color: #f59e0b;">report</span>
-                        탈퇴
-                    </button>
-
-                    <hr class="section-divider">
-                    <div class="divider"></div>
-
-            <div class="setting-card">
-                <div class="setting-info">
-                    <span class="setting-title">대화 기록 저장 동의</span>
-                    <span class="setting-desc">AI의 품질 향상을 위해 텍스트를 저장합니다.</span>
-                </div>
-                <label class="switch">
-                    <input type="checkbox" id="consentCheckbox" onchange="updateConsent()" {% if is_consented %}checked{% endif %}>
-                    <span class="slider round"></span>
-                </label>
-            </div>
-
-
+                    <button class="btn-large btn-blue" onclick="showView('edit-view')"><span class="material-symbols-outlined">person</span> 정보 수정</button>
+                    <button class="btn-large btn-danger-outline" onclick="showView('withdraw-view')"><span class="material-symbols-outlined" style="color: #f59e0b;">report</span> 탈퇴</button>
+                    <div style="width: 100%; border-top: 1px solid #eee; margin: 20px 0;"></div>
+                    <div style="display: flex; width: 100%; max-width: 420px; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 15px 25px; border-radius: 20px; border: 1px solid #eee;">
+                        <div style="text-align: left;">
+                            <div style="font-weight: bold; font-size: 15px;">대화 기록 저장 동의</div>
+                            <div style="font-size: 12px; color: #888;">AI 품질 향상을 위해 텍스트를 저장합니다.</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="consentCheckbox" onchange="updateConsent()" {% if is_consented %}checked{% endif %}>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
                 </div>
             </div>
 
             <div id="edit-view" class="view-section">
-                <h2 class="main-title">비밀번호 변경</h2>
-
-                <div class="input-group">
-                    <label>기존 비밀번호</label>
-                    <div class="password-wrapper">
-                        <input type="password" id="pw-old">
-                        <span class="eye-icon" onclick="togglePassword('pw-old', this)">👁️</span>
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label>새 비밀번호</label>
-                    <div class="password-wrapper">
-                        <input type="password" id="pw-new">
-                        <span class="eye-icon" onclick="togglePassword('pw-new', this)">👁️</span>
-                    </div>
-                </div>
-
-                <div class="input-group" style="flex-direction: column;">
-                    <div style="display:flex; align-items:center; justify-content:center;">
-                        <label>새 비밀번호 확인</label>
-                        <div class="password-wrapper">
-                            <input type="password" id="pw-confirm" oninput="checkPasswordMatch()">
-                            <span class="eye-icon" onclick="togglePassword('pw-confirm', this)">👁️</span>
-                        </div>
-                    </div>
-                    <div id="pw-match-error" style="display:none; color:red; font-size:12px;">
-                        새 비밀번호가 일치하지 않습니다.
-                    </div>
-                </div>
-
-
-                <button class="btn-large btn-navy" style="margin-top: 30px;" onclick="submitPasswordChange()">
-                    변경 완료
-                </button>
-
+    <h2 style="font-size:26px; font-weight:800; margin-bottom:40px;">비밀번호 변경</h2>
+    
+    <div class="input-group">
+        <label for="pw-old">기존 비밀번호</label>
+        <div style="display: flex; flex-direction: column;">
+            <div class="password-wrapper">
+                <input type="password" id="pw-old">
+                <span class="eye-icon" onclick="togglePassword('pw-old', this)">👁️</span>
             </div>
-
-            <div id="withdraw-view" class="view-section">
-                <h2 style="color: var(--danger-p); margin-top: 100px;">회원 탈퇴</h2>
-                <p>탈퇴하시면 모든 데이터가 삭제되며 복구할 수 없습니다.<br>정말로 톤가드를 떠나시겠습니까?</p>
-                <button class="btn-large btn-danger" style="margin-top: 40px;" onclick="confirmWithdraw()">탈퇴
-                    확인</button>
-            </div>
+            <div id="pw-old-error" style="color: #EF4444; font-size: 12px; display: none; margin-top: 5px; text-align: left;">기존 비밀번호가 일치하지 않습니다.</div>
         </div>
     </div>
 
+    <div class="input-group">
+        <label for="pw-new">새 비밀번호</label>
+        <div style="display: flex; flex-direction: column;">
+            <div class="password-wrapper">
+                <input type="password" id="pw-new" oninput="checkPasswordMatch()">
+                <span class="eye-icon" onclick="togglePassword('pw-new', this)">👁️</span>
+            </div>
+            <div id="pw-length-error" style="color: #EF4444; font-size: 12px; display: none; margin-top: 5px; text-align: left;">비밀번호가 너무 쉽습니다! (8자 이상)</div>
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label for="pw-confirm">새 비밀번호 확인</label>
+        <div style="display: flex; flex-direction: column;">
+            <div class="password-wrapper">
+                <input type="password" id="pw-confirm" oninput="checkPasswordMatch()">
+                <span class="eye-icon" onclick="togglePassword('pw-confirm', this)">👁️</span>
+            </div>
+            <div id="pw-match-error" style="color: #EF4444; font-size: 12px; display: none; margin-top: 5px; text-align: left;">새 비밀번호가 일치하지 않습니다.</div>
+        </div>
+    </div>
+
+    <button class="btn-large btn-navy" style="margin-top: 30px;" onclick="submitPasswordChange()">변경 완료</button>
+</div>
+<div id="withdraw-view" class="view-section">
+                <h2 style="color: var(--danger-p); margin-top: 50px;">회원 탈퇴</h2>
+                <p>탈퇴하시면 모든 데이터가 삭제되며 복구할 수 없습니다.<br>정말로 톤가드를 떠나시겠습니까?</p>
+                <button class="btn-large btn-danger-outline" style="margin-top: 40px;" onclick="confirmWithdraw()">탈퇴 확인</button>
+            </div>
+        </div>
     <script>
-        // [기능 1] 사이드바 탭 전환 및 인사말 변경 함수
+        /* [1] 공통 UI 기능 */
         function showView(viewId) {
-            // 1. 클릭한 화면 띄워주기
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
-
-            // 2. [추가됨] 탭을 이동하면 헤더의 인사말을 심플하게 'OO님'으로 바꿉니다.
-            const greetingElement = document.querySelector('.greeting');
-            if (greetingElement) {
-                // 파이썬(Jinja2)이 넘겨준 이름을 그대로 사용하여 텍스트를 덮어씁니다.
-                greetingElement.innerText = "{{ user_name }}님";
-            }
+            const greeting = document.querySelector('.greeting');
+            if (greeting) greeting.innerText = "{{ user_name }}님";
         }
 
-        function togglePassword(inputId, iconElement) {
-            const passwordInput = document.getElementById(inputId);
-            if (!passwordInput || passwordInput.type === "text") return;
-
-            passwordInput.type = "text";     
-            iconElement.innerText = "👁️‍🗨️"; 
-
-            setTimeout(() => {
-                passwordInput.type = "password";
-                iconElement.innerText = "👁️"; 
-            }, 1500); 
+        function togglePassword(inputId, icon) {
+            const input = document.getElementById(inputId);
+            input.type = "text"; icon.innerText = "👁️‍🗨️";
+            setTimeout(() => { input.type = "password"; icon.innerText = "👁️"; }, 1500);
         }
 
+        /* [2] 비밀번호 변경 로직 (변수 이름표 완벽 일치!) */
         function checkPasswordMatch() {
             const pwNew = document.getElementById('pw-new').value;
             const pwConfirm = document.getElementById('pw-confirm').value;
-            const errorMsg = document.getElementById('pw-match-error');
+            const lengthError = document.getElementById('pw-length-error');
+            const matchError = document.getElementById('pw-match-error');
 
-            if (!errorMsg) return; // 🔥 방어코드
+            if (!lengthError || !matchError) return;
 
-            if (pwConfirm.length > 0 && pwNew !== pwConfirm) {
-                errorMsg.style.display = 'block';
-            } else {
-                errorMsg.style.display = 'none';
-            }
-        }
-
-        // 🌟 [추가됨] 페이지네이션을 위한 핵심 기억 장치 (전역 변수)
-        let allHistoryData = []; // 서버에서 받아온 전체 100개, 200개의 데이터를 통째로 들고 있을 바구니
-        let currentPage = 1;     // 현재 사용자가 보고 있는 페이지 번호
-        const itemsPerPage = 10; // 한 페이지에 몇 개씩 보여줄 것인지 설정 (10개)
-
-        function loadHistory() {
-            const listContainer = document.getElementById('history-list');
-            listContainer.innerHTML = '<p style="color: #64748B;">기록을 불러오는 중...</p>';
-            
-            fetch('/api/history') 
-                .then(response => response.json())
-                .then(data => {
-                    if (!data.history || data.history.length === 0) {
-                        listContainer.innerHTML = '<p>기록이 없습니다.</p>';
-                        document.getElementById('pagination-container').innerHTML = ''; // 버튼 영역 비우기
-                        return;
-                    }
-
-                    // 1. 서버가 준 데이터를 '최신순'으로 보기 좋게 뒤집어서 바구니에 담습니다.
-                    allHistoryData = data.history.reverse(); 
-                    
-                    // 2. 처음 불러올 때는 무조건 1페이지부터 보여줍니다.
-                    currentPage = 1; 
-                    
-                    // 3. 1페이지에 해당하는 딱 10개만 화면에 그리라고 명령합니다.
-                    renderHistoryPage(currentPage);
-                })
-                .catch(err => {
-                    listContainer.innerHTML = '<p style="color:red;">서버 통신 오류가 발생했습니다.</p>';
-                    console.error("History fetch error:", err);
-                });
-        }
-
-        // 🌟 가로 리스트형으로 데이터를 그려주는 함수 (2단계 최종 적용)
-        function renderHistoryPage(page) {
-            const listContainer = document.getElementById('history-list');
-            listContainer.innerHTML = ''; // 이전 페이지의 카드들을 지웁니다.
-
-            // 10개 단위로 데이터 자르기
-            const startIndex = (page - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-            const pageItems = allHistoryData.slice(startIndex, endIndex);
-
-            pageItems.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'history-card';
-                
-                // 1. 카테고리 텍스트를 분석해서 1단계에서 만든 CSS 옷(클래스)과 구글 아이콘을 짝지어줍니다.
-                const rawTone = item.tone_type || item.context_type || '일상';
-                let catClass = 'cat-daily';
-                let icon = 'sentiment_satisfied'; // 기본 아이콘 (스마일)
-
-                if (rawTone.includes("업무") || rawTone.includes("polite")) { 
-                    catClass = 'cat-business'; icon = 'work'; 
-                } else if (rawTone.includes("의견") || rawTone.includes("firm")) { 
-                    catClass = 'cat-conflict'; icon = 'bolt'; 
-                } else if (rawTone.includes("피드백")) { 
-                    catClass = 'cat-feedback'; icon = 'edit_note'; 
-                } else if (rawTone.includes("사과")) { 
-                    catClass = 'cat-apology'; icon = 'volunteer_activism'; 
-                } else if (rawTone.includes("친근") || rawTone.includes("friendly")) {
-                    catClass = 'cat-daily'; icon = 'coffee'; 
-                }
-                
-                const original = item.original || item.upload_text || '원문 없음';
-                const corrected = item.corrected || item.corr_text || '교정문 없음';
-                const historyId = item.corr_idx;
-
-                // 🌟 [핵심] 가로 1줄 레이아웃 생성 및 옷(클래스) 입히기
-                card.classList.add(catClass);
-                
-                // 💡 꿀팁: 텍스트가 너무 길어 ... 으로 잘렸을 때, 마우스를 올리면 전체 글씨가 보이도록 title 속성을 추가했습니다.
-                card.innerHTML = `
-                    <div class="tone-badge">
-                        <span class="material-symbols-outlined" style="font-size:16px;">${icon}</span>
-                        ${rawTone}
-                    </div>
-                    <div class="history-info">
-                        <div class="text-item" title="${original}">
-                            <span class="label-mini">원문</span> ${original}
-                        </div>
-                        <div class="text-item" title="${corrected}">
-                            <span class="label-mini" style="color:#3b82f6;">교정</span> <strong>${corrected}</strong>
-                        </div>
-                    </div>
-                    <button class="delete-btn-mini" onclick="deleteHistoryItem(${historyId})">✕</button>
-                `;
-
-                listContainer.appendChild(card);
-            });
-
-            // 카드를 다 그렸으면 하단 번호 버튼을 다시 그립니다.
-            renderPagination();
-        }
-
-        // 🌟 [추가됨] 화면 맨 밑에 번호 버튼들을 예쁘게 만들어주는 함수
-        function renderPagination() {
-            const pageContainer = document.getElementById('pagination-container');
-            pageContainer.innerHTML = ''; // 기존 버튼들 초기화
-
-            // 전체 카드가 32개라면 10으로 나눠서 총 4페이지가 필요하다고 계산합니다.
-            const totalPages = Math.ceil(allHistoryData.length / itemsPerPage);
-            
-            // 데이터가 10개 이하라면 1페이지밖에 없으므로 굳이 버튼을 만들지 않고 함수를 종료합니다.
-            if (totalPages <= 1) return; 
-
-            // 필요한 페이지 수만큼 반복하며 버튼을 생성합니다.
-            for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement('button');
-                btn.innerText = i;
-                
-                // 버튼 디자인: 내가 현재 보고 있는 페이지 번호는 파란색, 나머지는 연한 회색으로 색칠합니다.
-                if (i === currentPage) {
-                    btn.style.background = '#84b1ec'; // 파란색 (포인트 컬러 적용)
-                    btn.style.color = 'white';
-                } else {
-                    btn.style.background = '#F4F7FA'; // 연한 회색
-                    btn.style.color = '#64748B';
-                }
-                
-                // 버튼 공통 디자인 세팅
-                btn.style.border = 'none';
-                btn.style.borderRadius = '8px';
-                btn.style.padding = '8px 14px';
-                btn.style.cursor = 'pointer';
-                btn.style.fontWeight = 'bold';
-                btn.style.transition = '0.2s';
-
-                // 마우스를 올렸을 때의 호버 효과
-                btn.onmouseover = function() { if (i !== currentPage) this.style.background = '#E2E8F0'; };
-                btn.onmouseout = function() { if (i !== currentPage) this.style.background = '#F4F7FA'; };
-
-                // 🎯 [핵심] 2번 버튼을 누르면 currentPage를 2로 바꾸고 카드를 다시 그리라고 명령합니다!
-                btn.onclick = () => {
-                    currentPage = i;
-                    renderHistoryPage(currentPage);
-                    // (선택) 페이지를 이동하면 화면 스크롤을 맨 위로 부드럽게 올려줍니다.
-                    document.querySelector('.content').scrollTo({ top: 0, behavior: 'smooth' });
-                };
-                
-                pageContainer.appendChild(btn);
-            }
+            // 길이 검사
+            lengthError.style.display = (pwNew.length > 0 && pwNew.length < 8) ? 'block' : 'none';
+            // 일치 검사
+            matchError.style.display = (pwConfirm.length > 0 && pwNew !== pwConfirm) ? 'block' : 'none';
         }
 
         function submitPasswordChange() {
-            const pwOld = document.getElementById('pw-old').value; 
-            const pwNew = document.getElementById('pw-new').value; 
-            const pwConfirm = document.getElementById('pw-confirm').value;
+            // 1. 값 가져오기
+            const pwOld = document.getElementById('pw-old')?.value;
+            const pwNew = document.getElementById('pw-new')?.value;
+            const pwConfirm = document.getElementById('pw-confirm')?.value;
 
+            // 2. 에러 메시지 요소 가져오기
+            const oldError = document.getElementById('pw-old-error');
+            const lengthError = document.getElementById('pw-length-error');
+            const matchError = document.getElementById('pw-match-error');
+
+            // 3. 일단 모든 에러 문구를 숨깁니다.
+            if (oldError) oldError.style.display = 'none';
+            if (lengthError) lengthError.style.display = 'none';
+            if (matchError) matchError.style.display = 'none';
+
+            // 4. 입력값 검증 (이곳에서 걸리면 alert가 떠야 합니다)
             if (!pwOld) { alert("기존 비밀번호를 입력해주세요."); return; }
             if (!pwNew) { alert("새 비밀번호를 입력해주세요."); return; }
             
+            // 새 비번 길이 체크
+            if (pwNew.length < 8) {
+                if (lengthError) lengthError.style.display = 'block';
+                return;
+            }
+            
+            // 비번 일치 체크
             if (pwNew !== pwConfirm) {
-                alert("새 비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
+                if (matchError) matchError.style.display = 'block';
                 return;
             }
 
+            // 5. 서버에 요청 보내기 (아이피와 포트를 꼭 확인하세요!)
             fetch('/api/update-password', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ current_password: pwOld, new_password: pwNew })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    alert("비밀번호가 성공적으로 변경되었습니다.");
-                    document.getElementById('pw-old').value = "";
-                    document.getElementById('pw-new').value = "";
-                    document.getElementById('pw-confirm').value = "";
-                    document.getElementById('pw-match-error').style.display = 'none';
-                } else {
-                    alert("오류: " + (data.message || "변경에 실패했습니다."));
-                }
-            })
-            .catch(err => alert("서버 연결 실패: " + err));
-        }
-        
-        function confirmWithdraw() {
-            if(confirm("확실히 탈퇴를 하시겠습니까?\n이 작업은 되돌릴 수 없습니다.")) {
-                fetch('/api/delete-account', { method: 'DELETE' })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        alert("회원 탈퇴가 완료되었습니다. 그동안 이용해 주셔서 감사합니다.");
-                        window.location.href = "/"; 
-                    } else {
-                        alert("오류: " + (data.message || "탈퇴 처리에 실패했습니다."));
-                    }
+                body: JSON.stringify({ 
+                    current_password: pwOld, 
+                    new_password: pwNew 
                 })
-                .catch(err => alert("서버 연결 실패: " + err));
-            }
-        }
-        
-
-        window.onload = function() {
-            loadHistory();
-        };
-
-        function updateConsent() {
-            const checkbox = document.getElementById("consentCheckbox");
-            const isAgreed = checkbox.checked;
-
-            fetch("/api/update-consent", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ consent: isAgreed })
             })
-            .then(res => res.json())
-            .then(data => {
-                if(data.status === "success") {
-                    console.log("✅ 저장 동의 상태 변경:", isAgreed);
+            .then(res => {
+                // 서버 응답이 오는지 확인용 로그
+                console.log("서버 응답 상태:", res.status);
+                return res.json().then(data => ({ ok: res.ok, data }));
+            })
+            .then(result => {
+                if (result.ok) {
+                    alert("비밀번호가 성공적으로 변경되었습니다.");
+                    location.reload();
                 } else {
-                    alert("설정 변경 실패");
-                    checkbox.checked = !isAgreed;  // 🔥 여기 수정됨
+                    // 서버가 "기존 비번 틀림" 등의 메시지를 보낸 경우
+                    if (oldError) {
+                        oldError.innerText = result.data.message || "기존 비밀번호가 일치하지 않습니다.";
+                        oldError.style.display = 'block';
+                        document.getElementById('pw-old').focus();
+                    }
                 }
             })
             .catch(err => {
-                console.error(err);
-                checkbox.checked = !isAgreed;  // 🔥 여기 수정됨
+                console.error("통신 장애 발생:", err);
+                alert("서버와 통신할 수 없습니다. 아이피와 포트를 확인해주세요.");
             });
         }
 
+        /* [3] 교정 기록 기능 (데이터 이름표 유연하게 매핑) */
+        let allHistoryData = [];
+        let currentPage = 1;
+        const itemsPerPage = 10;
 
-        // [추가] 특정 교정 기록을 삭제하는 함수
-        function deleteHistoryItem(itemId) {
-            // 방어 코드: 만약 백엔드에서 id 번호를 주지 않았다면 오류를 막습니다.
-            if (!itemId) {
-                alert("이 기록은 아직 삭제할 수 없습니다. (ID 값 없음)");
-                return;
-            }
+        function loadHistory() {
+            fetch('/api/history')
+            .then(res => res.json())
+            .then(data => {
+                allHistoryData = (data.history || []).reverse();
+                renderHistoryPage(1);
+            });
+        }
 
-            if (confirm("이 기록을 정말 삭제하시겠습니까?")) {
-                fetch(`/api/history/${itemId}`, {
-                    method: 'DELETE'
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        // 삭제 성공 시! 새로고침할 필요 없이 기록만 다시 불러와서 그려줍니다.
-                        loadHistory(); 
-                    } else {
-                        alert("오류: " + (data.message || "삭제에 실패했습니다."));
-                    }
-                })
-                .catch(err => alert("서버 연결 실패: " + err));
+        function renderHistoryPage(page) {
+            currentPage = page;
+            const list = document.getElementById('history-list');
+            list.innerHTML = '';
+            const items = allHistoryData.slice((page-1)*itemsPerPage, page*itemsPerPage);
+
+            items.forEach(item => {
+                const original = item.original || item.upload_text || '내용 없음';
+                const corrected = item.corrected || item.corr_text || '내용 없음';
+                const tone = item.tone_type || item.context_type || '일상';
+                const idx = item.corr_idx || item.id;
+
+                let icon = 'sentiment_satisfied'; let cat = 'cat-daily';
+                if(tone.includes('업무')) { icon='work'; cat='cat-business'; }
+                else if(tone.includes('의견') || tone.includes('충돌')) { icon='bolt'; cat='cat-conflict'; }
+                else if(tone.includes('피드백')) { icon='edit_note'; cat='cat-feedback'; }
+                else if(tone.includes('사과')) { icon='volunteer_activism'; cat='cat-apology'; }
+
+                const card = document.createElement('div');
+                card.className = `history-card ${cat}`;
+                card.innerHTML = `
+                    <div class="tone-badge"><span class="material-symbols-outlined" style="font-size:16px;">${icon}</span>${tone}</div>
+                    <div class="history-info">
+                        <div class="text-item" title="${original}"><span class="label-mini">원문</span>${original}</div>
+                        <div class="text-item" title="${corrected}"><span class="label-mini" style="color:#3b82f6;">교정</span><strong>${corrected}</strong></div>
+                    </div>
+                    <button class="delete-btn-mini" onclick="deleteHistoryItem(${idx})">✕</button>`;
+                list.appendChild(card);
+            });
+            renderPagination();
+        }
+
+        function renderPagination() {
+            const container = document.getElementById('pagination-container');
+            const total = Math.ceil(allHistoryData.length / itemsPerPage);
+            container.innerHTML = '';
+            if (total <= 1) return;
+            for(let i=1; i<=total; i++) {
+                const btn = document.createElement('button');
+                btn.innerText = i;
+                btn.style.cssText = `border:none; border-radius:8px; padding:8px 14px; cursor:pointer; font-weight:bold; margin:0 4px; background:${i===currentPage?'#84b1ec':'#F4F7FA'}; color:${i===currentPage?'white':'#64748B'}; transition: 0.2s;`;
+                btn.onclick = () => renderHistoryPage(i);
+                container.appendChild(btn);
             }
         }
+
+        function deleteHistoryItem(id) {
+            if(confirm("이 기록을 삭제하시겠습니까?")) {
+                fetch(`/api/history/${id}`, { method: 'DELETE' })
+                .then(res => res.json()).then(data => { if(data.status==='success') loadHistory(); });
+            }
+        }
+
+        /* [4] 설정 및 계정 관리 */
+        function updateConsent() {
+            const agreed = document.getElementById("consentCheckbox").checked;
+            fetch("/api/update-consent", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ consent: agreed })
+            });
+        }
+
+        function confirmWithdraw() {
+            if(confirm("정말 탈퇴하시겠습니까? 복구할 수 없습니다.")) {
+                fetch('/api/delete-account', { method: 'DELETE' })
+                .then(res => res.json()).then(data => { if(data.status==='success') window.location.href="/"; });
+            }
+        }
+
+        window.onload = loadHistory;
     </script>
 </body>
-
 </html>
