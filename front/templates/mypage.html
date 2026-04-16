@@ -262,112 +262,104 @@
             display: block;
         }
 
-        /* 교정 기록 카드 디자인 */
+        /* [교정 기록 리스트형 디자인 - 다이어트 버전] */
+        #history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px; /* 카드 사이 간격을 타이트하게 */
+        }
 
-        /* [수정 위치] 기존 .history-card 스타일 대체 */
-
-        /* 1. 개별 카드 컨테이너 */
         .history-card {
             position: relative;
             background: #ffffff;
             border: 1px solid #eef2f6;
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 20px;
+            border-radius: 12px; /* 모서리를 조금 더 샤프하게 */
+            padding: 6px 20px; /* 내부 여백 대폭 축소 */
+            display: flex; /* 가로 배치 */
+            align-items: center;
+            gap: 15px;
+            transition: all 0.2s ease;
+            min-height: 40px; /* 높이 고정으로 10개 정렬 유지 */
             text-align: left;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        /* ✅ 삭제 버튼 오른쪽 상단 고정 */
-        .delete-btn {
-        position: absolute;
-        top: 12px;
-        right: 12px;
-        background: none;       /* 배경 제거 */
-        border: none;           /* 테두리 제거 */
-        font-size: 18px;        /* X 크기 */
-        color: #aaa;            /* 기본 회색 */
-        cursor: pointer;
-        line-height: 1;
-        padding: 0;
-        }
-
-        .delete-btn:hover {
-            color: #e74c3c;         /* 마우스 올리면 빨간색 */
         }
 
         .history-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+            background: #f8fafc;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
-        /* 2. 톤(Tone) 표시 뱃지 스타일 */
-        .history-card .tone-badge {
-            display: inline-block;
-            padding: 6px 14px;
-            border-radius: 10px;
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            background: #f1f5f9;
-            /* 기본 배경 */
-            color: #64748b;
-            /* 기본 글자색 */
-        }
-
-        /* 3. 원문/교정 텍스트 레이아웃 */
-        .history-item {
+        /* 1. 카테고리 뱃지 공통 스타일 */
+        .tone-badge {
+            min-width: 80px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
+            text-align: center;
             display: flex;
-            gap: 12px;
-            margin-bottom: 8px;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
         }
 
-        .history-item .label {
-            min-width: 45px;
+        /* 2. 텍스트 영역 (가로 분할) */
+        .history-info {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 13.5px; /* 글자 크기 살짝 축소 */
+        }
+
+        .text-item {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; /* 너무 길면 ... 처리 */
+        }
+
+        .label-mini {
             font-weight: 800;
             color: #94a3b8;
-            font-size: 14px;
+            margin-right: 8px;
+            font-size: 11px;
         }
 
-        .history-item.original .text {
-            color: #64748b;
-            text-decoration: line-through;
-            /* 원문은 취소선으로 대비 효과 */
-            opacity: 0.7;
-        }
+        /* 3. 카테고리별 포인트 컬러 및 애니메이션 */
 
-        .history-item.corrected .text {
-            color: #1E293B;
-            font-weight: 600;
-        }
+        /* [업무] - 파란색 + 스위프 효과 */
+        .cat-business { background: #eff6ff; color: #3b82f6; border: 1px solid #dbeafe; }
+        .history-card.cat-business:hover .tone-badge { animation: sweep 0.6s ease-in-out; }
 
-        /* 4. 톤별 포인트 컬러 (JS에서 클래스 추가 예정) */
-        .tone-business {
-            background: #ecfdf5 !important;
-            color: #10b981 !important;
-        }
+        /* [의견충돌] - 주황/빨강 + 펄스 효과 */
+        .cat-conflict { background: #fff1f2; color: #f43f5e; border: 1px solid #ffe4e6; }
+        .history-card.cat-conflict:hover .tone-badge { animation: pulse-mini 0.6s infinite; }
 
-        /* 초록색 */
-        .tone-friendly {
-            background: #fff7ed !important;
-            color: #f59e0b !important;
-        }
+        /* [피드백] - 초록색 + 바운스 효과 */
+        .cat-feedback { background: #f0fdf4; color: #22c55e; border: 1px solid #dcfce7; }
+        .history-card.cat-feedback:hover .tone-badge { animation: bounce-mini 0.5s ease; }
 
-        /* 주황색 */
-        .tone-firm {
-            background: #fef2f2 !important;
-            color: #ef4444 !important;
-        }
+        /* [일상] - 노란색 + 플로팅 효과 */
+        .cat-daily { background: #fefce8; color: #eab308; border: 1px solid #fef9c3; }
+        .history-card.cat-daily:hover .tone-badge { animation: floating 1.5s ease-in-out infinite; }
 
-        /* 빨간색 */
+        /* [사과] - 보라색 + 고개숙임 효과 */
+        .cat-apology { background: #faf5ff; color: #a855f7; border: 1px solid #f3e8ff; }
+        .history-card.cat-apology:hover .tone-badge { animation: bowing 0.6s ease; }
 
-        .history-card span {
-            color: var(--success-m);
-            font-weight: bold;
-            display: block;
-            margin-bottom: 10px;
+        /* [애니메이션 정의] */
+        @keyframes sweep { 0% { opacity: 0.7; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes pulse-mini { 0% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(244, 63, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); } }
+        @keyframes bounce-mini { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+        @keyframes bowing { 0% { transform: translateY(0); } 50% { transform: translateY(3px) rotate(2deg); } 100% { transform: translateY(0); } }
+
+        /* 삭제 버튼 콤팩트화 */
+        .delete-btn-mini {
+            background: none; border: none; color: #cbd5e1; cursor: pointer; font-size: 16px; transition: 0.2s;
         }
+        .delete-btn-mini:hover { color: #f43f5e; }
 
         /* 각종 버튼 및 입력창 디자인 */
         .btn-large {
@@ -1097,8 +1089,12 @@
                     </div>
                     <p class="sub-title">Toneguard가 제안한 대화 기록들을 한눈에 확인해 보세요.</p>
                 </div>
+                
                 <div id="history-list">
                     <p style="color: #64748B;">기록을 불러오는 중...</p>
+                </div>
+                
+                <div id="pagination-container" style="display: flex; justify-content: center; gap: 8px; margin-top: 25px; margin-bottom: 20px;">
                 </div>
             </div>
 
@@ -1222,6 +1218,11 @@
             }
         }
 
+        // 🌟 [추가됨] 페이지네이션을 위한 핵심 기억 장치 (전역 변수)
+        let allHistoryData = []; // 서버에서 받아온 전체 100개, 200개의 데이터를 통째로 들고 있을 바구니
+        let currentPage = 1;     // 현재 사용자가 보고 있는 페이지 번호
+        const itemsPerPage = 10; // 한 페이지에 몇 개씩 보여줄 것인지 설정 (10개)
+
         function loadHistory() {
             const listContainer = document.getElementById('history-list');
             listContainer.innerHTML = '<p style="color: #64748B;">기록을 불러오는 중...</p>';
@@ -1229,47 +1230,136 @@
             fetch('/api/history') 
                 .then(response => response.json())
                 .then(data => {
-                    listContainer.innerHTML = ''; 
-                    
                     if (!data.history || data.history.length === 0) {
                         listContainer.innerHTML = '<p>기록이 없습니다.</p>';
+                        document.getElementById('pagination-container').innerHTML = ''; // 버튼 영역 비우기
                         return;
                     }
 
-                    data.history.forEach(item => {
-                        const card = document.createElement('div');
-                        card.className = 'history-card';
-                        
-                        const tone = item.tone_type || item.context_type || '교정';
-                        const original = item.original || item.upload_text || '원문 없음';
-                        const corrected = item.corrected || item.corr_text || '교정문 없음';
-                        
-                        // ✅ [수정됨] 백엔드가 주는 진짜 이름표인 'corr_idx'로 바꿨습니다!
-                        const historyId = item.corr_idx;
-
-                        if (tone.includes("polite")) {
-                            card.classList.add("tone-business");
-                        } else if (tone.includes("friendly")) {
-                            card.classList.add("tone-friendly");
-                        } else if (tone.includes("firm")) {
-                            card.classList.add("tone-firm");
-                        }
-
-                        // 삭제 버튼 코드가 맨 위에 한 줄 추가되었습니다!
-                        card.innerHTML = `
-                            <button class="delete-btn" onclick="deleteHistoryItem(${historyId})">✕</button>
-                            <span>[${tone}]</span>
-                            <p style="margin-bottom: 5px;">원문: ${original}</p>
-                            <p style="font-weight:bold; color: #1E293B;">교정: ${corrected}</p>
-                        `;
-
-                        listContainer.appendChild(card);
-                    });
+                    // 1. 서버가 준 데이터를 '최신순'으로 보기 좋게 뒤집어서 바구니에 담습니다.
+                    allHistoryData = data.history.reverse(); 
+                    
+                    // 2. 처음 불러올 때는 무조건 1페이지부터 보여줍니다.
+                    currentPage = 1; 
+                    
+                    // 3. 1페이지에 해당하는 딱 10개만 화면에 그리라고 명령합니다.
+                    renderHistoryPage(currentPage);
                 })
                 .catch(err => {
                     listContainer.innerHTML = '<p style="color:red;">서버 통신 오류가 발생했습니다.</p>';
                     console.error("History fetch error:", err);
                 });
+        }
+
+        // 🌟 가로 리스트형으로 데이터를 그려주는 함수 (2단계 최종 적용)
+        function renderHistoryPage(page) {
+            const listContainer = document.getElementById('history-list');
+            listContainer.innerHTML = ''; // 이전 페이지의 카드들을 지웁니다.
+
+            // 10개 단위로 데이터 자르기
+            const startIndex = (page - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageItems = allHistoryData.slice(startIndex, endIndex);
+
+            pageItems.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'history-card';
+                
+                // 1. 카테고리 텍스트를 분석해서 1단계에서 만든 CSS 옷(클래스)과 구글 아이콘을 짝지어줍니다.
+                const rawTone = item.tone_type || item.context_type || '일상';
+                let catClass = 'cat-daily';
+                let icon = 'sentiment_satisfied'; // 기본 아이콘 (스마일)
+
+                if (rawTone.includes("업무") || rawTone.includes("polite")) { 
+                    catClass = 'cat-business'; icon = 'work'; 
+                } else if (rawTone.includes("의견") || rawTone.includes("firm")) { 
+                    catClass = 'cat-conflict'; icon = 'bolt'; 
+                } else if (rawTone.includes("피드백")) { 
+                    catClass = 'cat-feedback'; icon = 'edit_note'; 
+                } else if (rawTone.includes("사과")) { 
+                    catClass = 'cat-apology'; icon = 'volunteer_activism'; 
+                } else if (rawTone.includes("친근") || rawTone.includes("friendly")) {
+                    catClass = 'cat-daily'; icon = 'coffee'; 
+                }
+                
+                const original = item.original || item.upload_text || '원문 없음';
+                const corrected = item.corrected || item.corr_text || '교정문 없음';
+                const historyId = item.corr_idx;
+
+                // 🌟 [핵심] 가로 1줄 레이아웃 생성 및 옷(클래스) 입히기
+                card.classList.add(catClass);
+                
+                // 💡 꿀팁: 텍스트가 너무 길어 ... 으로 잘렸을 때, 마우스를 올리면 전체 글씨가 보이도록 title 속성을 추가했습니다.
+                card.innerHTML = `
+                    <div class="tone-badge">
+                        <span class="material-symbols-outlined" style="font-size:16px;">${icon}</span>
+                        ${rawTone}
+                    </div>
+                    <div class="history-info">
+                        <div class="text-item" title="${original}">
+                            <span class="label-mini">원문</span> ${original}
+                        </div>
+                        <div class="text-item" title="${corrected}">
+                            <span class="label-mini" style="color:#3b82f6;">교정</span> <strong>${corrected}</strong>
+                        </div>
+                    </div>
+                    <button class="delete-btn-mini" onclick="deleteHistoryItem(${historyId})">✕</button>
+                `;
+
+                listContainer.appendChild(card);
+            });
+
+            // 카드를 다 그렸으면 하단 번호 버튼을 다시 그립니다.
+            renderPagination();
+        }
+
+        // 🌟 [추가됨] 화면 맨 밑에 번호 버튼들을 예쁘게 만들어주는 함수
+        function renderPagination() {
+            const pageContainer = document.getElementById('pagination-container');
+            pageContainer.innerHTML = ''; // 기존 버튼들 초기화
+
+            // 전체 카드가 32개라면 10으로 나눠서 총 4페이지가 필요하다고 계산합니다.
+            const totalPages = Math.ceil(allHistoryData.length / itemsPerPage);
+            
+            // 데이터가 10개 이하라면 1페이지밖에 없으므로 굳이 버튼을 만들지 않고 함수를 종료합니다.
+            if (totalPages <= 1) return; 
+
+            // 필요한 페이지 수만큼 반복하며 버튼을 생성합니다.
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.innerText = i;
+                
+                // 버튼 디자인: 내가 현재 보고 있는 페이지 번호는 파란색, 나머지는 연한 회색으로 색칠합니다.
+                if (i === currentPage) {
+                    btn.style.background = '#84b1ec'; // 파란색 (포인트 컬러 적용)
+                    btn.style.color = 'white';
+                } else {
+                    btn.style.background = '#F4F7FA'; // 연한 회색
+                    btn.style.color = '#64748B';
+                }
+                
+                // 버튼 공통 디자인 세팅
+                btn.style.border = 'none';
+                btn.style.borderRadius = '8px';
+                btn.style.padding = '8px 14px';
+                btn.style.cursor = 'pointer';
+                btn.style.fontWeight = 'bold';
+                btn.style.transition = '0.2s';
+
+                // 마우스를 올렸을 때의 호버 효과
+                btn.onmouseover = function() { if (i !== currentPage) this.style.background = '#E2E8F0'; };
+                btn.onmouseout = function() { if (i !== currentPage) this.style.background = '#F4F7FA'; };
+
+                // 🎯 [핵심] 2번 버튼을 누르면 currentPage를 2로 바꾸고 카드를 다시 그리라고 명령합니다!
+                btn.onclick = () => {
+                    currentPage = i;
+                    renderHistoryPage(currentPage);
+                    // (선택) 페이지를 이동하면 화면 스크롤을 맨 위로 부드럽게 올려줍니다.
+                    document.querySelector('.content').scrollTo({ top: 0, behavior: 'smooth' });
+                };
+                
+                pageContainer.appendChild(btn);
+            }
         }
 
         function submitPasswordChange() {
