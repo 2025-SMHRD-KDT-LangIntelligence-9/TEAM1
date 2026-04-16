@@ -138,6 +138,10 @@ async def mypage(request: Request):
     if not token:
         return RedirectResponse(url="/login", status_code=303)
     
+    # 🌟 [추가된 부분] 브라우저 쿠키에서 동의 상태를 읽어옵니다. (기본값은 "true")
+    consent_cookie = request.cookies.get("user_consent", "true")
+    is_consented = (consent_cookie.lower() == "true") # true면 True로, false면 False로 변환
+    
     # 2. 기본 이름 설정
     real_name = "고객"
 
@@ -161,7 +165,11 @@ async def mypage(request: Request):
     return templates.TemplateResponse(
         request=request, 
         name="mypage.html", 
-        context={"user_name": real_name}
+        # 🌟 [추가된 부분] 화면에 이름과 함께 '동의 여부(is_consented)'도 전달합니다!
+        context={
+            "user_name": real_name,
+            "is_consented": is_consented
+        }
     )
 
 # 마이페이지 내 교정 기록 데이터 가져오기 (백엔드에서 조회 후 프론트로 전달)
