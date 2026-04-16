@@ -1,5 +1,6 @@
 import os
 import sys
+sys.stdout.reconfigure(encoding='utf-8')
 import subprocess  # 외부 프로그램(스캐너 앱)을 실행하기 위한 라이브러리
 import pygetwindow as gw  # 현재 열려있는 브라우저 창을 제어(최소화)하기 위한 라이브러리
 import requests  # 백엔드 서버(192.168.0.77)와 데이터를 주고받기 위한 통신 라이브러리
