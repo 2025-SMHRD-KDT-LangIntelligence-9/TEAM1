@@ -311,11 +311,22 @@
         let currentPage = 1;
         const itemsPerPage = 10;
 
+        /* [수정된 교정 기록 불러오기] 최신순 정렬 버전 */
         function loadHistory() {
             fetch('/api/history')
             .then(res => res.json())
             .then(data => {
-                allHistoryData = (data.history || []).reverse();
+                // 1. 데이터를 가져온 후, ID(corr_idx 또는 id)가 큰 순서대로 정렬합니다.
+                const historyArr = data.history || [];
+                
+                allHistoryData = historyArr.sort((a, b) => {
+                    // 숫자가 큰 것(최신)이 위로 오도록 b에서 a를 뺍니다.
+                    const idA = a.corr_idx || a.id || 0;
+                    const idB = b.corr_idx || b.id || 0;
+                    return idB - idA; 
+                });
+
+                // 2. 정렬된 데이터를 첫 페이지부터 보여줍니다.
                 renderHistoryPage(1);
             });
         }
