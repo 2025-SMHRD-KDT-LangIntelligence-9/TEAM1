@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToneGuard AI Scanner</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* =========================================
+           [1] 기존 스타일 (유지)
+           ========================================= */
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #FFFFFF; color: #2C3E50;
+            display: flex; flex-direction: column; height: 100vh; overflow: hidden;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        header { background: #FFFFFF; padding: 20px 225px; display: flex; justify-content: flex-end; align-items: center; }
+        .header-menu { display: flex; align-items: center; gap: 15px; }
+        .btn-common { padding: 10px 20px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 15px; transition: all 0.3s; color: white; }
+        .btn-login { background: #3B82F6; }
+        .btn-mypage { background: #64748B; }
+        .btn-logout { background: #3B82F6; }
+
+        .hero { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; text-align: center; padding-top: 10px; }
+        .hero-logo { width: 400px; margin-bottom: 10px; animation: fadeInDown 1s ease-out; }
+        .hero-logo img { width: 100%; height: auto; object-fit: contain; }
+        .hero-desc { font-size: 32px; font-weight: 700; margin-bottom: 30px; color: #1E293B; animation: fadeInDown 1s ease-out 0.2s both; word-break: keep-all; }
+        
+        .highlight-point { font-size: 1.2em; font-weight: 900; background: linear-gradient(120deg, #3B82F6 20%, #8ECAE6 40%, #3B82F6 60%, #8ECAE6 80%, #3B82F6 100%); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; display: inline-block; }
+        @keyframes shine { to { background-position: 200% center; } }
+
+        .btn-scan { background: #1E293B; color: white; padding: 20px 60px; border-radius: 50px; text-decoration: none; font-size: 20px; font-weight: 900; letter-spacing: -1px; box-shadow: 0 10px 25px rgba(30, 41, 59, 0.3); transition: all 0.3s; margin-bottom: 40px; z-index: 10; animation: pulse-animation 2s infinite; }
+        .btn-scan:hover { transform: scale(1.05); background: #0F172A; }
+
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse-animation { 0% { box-shadow: 0 0 0 0 rgba(30, 41, 59, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(30, 41, 59, 0); } 100% { box-shadow: 0 0 0 0 rgba(30, 41, 59, 0); } }
+
+        .cards-container { display: flex; gap: 20px; justify-content: center; padding: 0 60px 40px; max-width: 1000px; margin: 0 auto; width: 100%; }
+        .card { position: relative; border-radius: 16px; flex: 1; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 180px; transition: all 0.3s ease; opacity: 0; animation: slideUpBounce 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; box-shadow: 0 10px 20px rgba(0,0,0,0.1); background-color: #1E293B; }
+        .card:nth-child(1) { animation-delay: 0.1s; } .card:nth-child(2) { animation-delay: 0.3s; } .card:nth-child(3) { animation-delay: 0.5s; }
+        .card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .card-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+        .card-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); z-index: 2; }
+        .card-title { position: relative; z-index: 3; font-size: 20px; font-weight: 900; color: #FFFFFF; text-shadow: 0 4px 10px rgba(0,0,0,0.6); }
+        @keyframes slideUpBounce { 0% { opacity: 0; transform: translateY(40px); } 100% { opacity: 1; transform: translateY(0); } }
+
+        /* =========================================
+           🌟 [추가] 스마트 안내창(Modal) 스타일
+           ========================================= */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(5px);
+            display: none; justify-content: center; align-items: center;
+            z-index: 9999; opacity: 0; transition: opacity 0.3s;
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        
+        .modal-content {
+            background: white; width: 500px; border-radius: 20px; padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transform: translateY(20px); transition: transform 0.3s;
+            text-align: left;
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+
+        .modal-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; color: #EF4444; }
+        .modal-header h2 { font-size: 22px; font-weight: 800; margin: 0; color: #1E293B; }
+        .modal-desc { color: #64748B; font-size: 15px; margin-bottom: 30px; line-height: 1.5; }
+
+        .guide-section { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; margin-bottom: 15px; }
+        .guide-title { font-weight: 700; color: #334155; margin-bottom: 8px; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+        .guide-text { font-size: 13px; color: #64748B; margin-bottom: 15px; line-height: 1.4; }
+        
+        .btn-download { 
+            display: block; width: 100%; padding: 12px; border-radius: 8px; 
+            text-align: center; text-decoration: none; font-weight: bold; font-size: 14px;
+            transition: 0.2s; cursor: pointer; border: none;
+        }
+        .btn-primary { background: #3B82F6; color: white; }
+        .btn-primary:hover { background: #2563EB; }
+        .btn-secondary { background: #10B981; color: white; }
+        .btn-secondary:hover { background: #059669; }
+        
+        .btn-close { 
+            width: 100%; padding: 15px; margin-top: 10px; background: transparent; 
+            border: 1px solid #CBD5E1; border-radius: 8px; color: #64748B; 
+            font-weight: bold; cursor: pointer; transition: 0.2s;
+        }
+        .btn-close:hover { background: #F1F5F9; color: #1E293B; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-menu">
+            {% if is_logged_in %}
+            <a href="/mypage" class="btn-common btn-mypage">My Page</a>
+            <a href="/logout" class="btn-common btn-logout">Logout</a>
+            {% else %}
+            <a href="/login" class="btn-common btn-login">Login</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <main class="hero">
+        <h1 class="hero-desc"><span class="highlight-point">진심</span>을 안전하게 전달합니다.</h1>
+        <div class="hero-logo">
+            <img src="{{ url_for('static', path='/logo.png') }}" alt="ToneGuard Logo">
+        </div>
+        
+        {% if is_logged_in %}
+        <a href="#" class="btn-scan" onclick="runScanner(event)">스캔 시작하기</a>
+        {% else %}
+        <a href="#" class="btn-scan" onclick="requireLogin(event)">스캔 시작하기</a>
+        {% endif %}
+    </main>
+
+    <section class="cards-container">
+        <div class="card"><video autoplay loop muted playsinline class="card-video"><source src="{{ url_for('static', path='/실시간감지.mp4') }}" type="video/mp4"></video><div class="card-overlay"></div><div class="card-title">실시간 감지</div></div>
+        <div class="card"><video autoplay loop muted playsinline class="card-video"><source src="{{ url_for('static', path='/톤분석.mp4') }}" type="video/mp4"></video><div class="card-overlay"></div><div class="card-title">톤 분석</div></div>
+        <div class="card"><video autoplay loop muted playsinline class="card-video"><source src="{{ url_for('static', path='/대안제시.mp4') }}" type="video/mp4"></video><div class="card-overlay"></div><div class="card-title">대안 제시</div></div>
+    </section>
+
+    <div class="modal-overlay" id="errorModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="fa-solid fa-triangle-exclamation fa-2x"></i>
+                <h2>스캐너 연결 실패</h2>
+            </div>
+            <p class="modal-desc">내 컴퓨터에서 스캐너를 찾을 수 없습니다. 아래 상황에 맞게 해결해 주세요.</p>
+
+            <div class="guide-section">
+                <div class="guide-title"><i class="fa-solid fa-1"></i> 처음 방문하셨나요?</div>
+                <div class="guide-text">ToneGuard 스캐너 설치가 필요합니다. 다운로드 후 실행해주세요.</div>
+                <a href="http://192.168.0.6:8888/static/ToneGuard_Installer.exe" class="btn-download btn-primary">
+                    <i class="fa-solid fa-download"></i> 스캐너 설치 프로그램 다운로드
+                </a>
+            </div>
+
+            <div class="guide-section">
+                <div class="guide-title"><i class="fa-solid fa-2"></i> 실행 시 'DLL 오류'가 나나요?</div>
+                <div class="guide-text">윈도우 필수 패키지(Visual C++)가 없어 화면을 그릴 수 없습니다. 아래 공식 패키지를 설치한 후 다시 시도해주세요.</div>
+                <a href="https://aka.ms/vs/17/release/vc_redist.x64.exe" target="_blank" class="btn-download btn-secondary">
+                    <i class="fa-brands fa-windows"></i> 윈도우 필수 패키지 설치
+                </a>
+            </div>
+
+            <button class="btn-close" onclick="closeModal()">닫기</button>
+        </div>
+    </div>
+
+    <script>
+        function requireLogin(event) { 
+            event.preventDefault(); 
+            alert("안내: 로그인이 필요합니다."); 
+            window.location.href = "/login"; 
+        }
+
+        // 🌟 [추가] 모달 제어 함수
+        function openModal() { document.getElementById('errorModal').classList.add('active'); }
+        function closeModal() { document.getElementById('errorModal').classList.remove('active'); }
+
+        // 🌟 [수정] 스캐너 실행 로직
+        function runScanner(event) {
+            event.preventDefault();
+                
+            const userToken = "{{ access_token }}";
+            const consent = document.cookie.includes("user_consent=true") ? "true" : "false";
+                
+            // toneguard:// URI scheme으로 스캐너 실행 시도
+            window.location.href = `toneguard://start?token=Bearer ${userToken}&consent=${consent}`;
+                
+            // 2초 후에도 반응 없으면 설치 안내 모달 표시
+            setTimeout(() => {
+                openModal();
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
