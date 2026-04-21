@@ -4,60 +4,128 @@
     <meta charset="UTF-8">
     <title>ToneGuard 마이페이지</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    
     <style>
-        :root { --header-w: #FFFFFF; --bg-sub: #F4F7FA; --text-d: #1E293B; --primary-b: #84b1ec; --danger-p: #F43F5E; --border-c: #a5cee9; --navy-main: #1E293B; --navy-hover: #0F172A; }
-        body { margin: 0; color: var(--text-d); display: flex; flex-direction: column; min-height: 100vh; font-family: 'Pretendard', sans-serif; background: var(--bg-sub); }
+        /* [1] CSS 변수 설정: 프로젝트 전체에서 재사용할 주요 색상들을 정의 (유지보수가 쉬워짐) */
+        :root { 
+            --header-w: #FFFFFF;      /* 헤더 배경색 (흰색) */
+            --bg-sub: #F4F7FA;        /* 전체 배경색 (연한 회파랑) */
+            --text-d: #1E293B;        /* 기본 텍스트 색상 (진한 남색/검정) */
+            --primary-b: #84b1ec;     /* 주요 포인트 컬러 (톤가드 블루) */
+            --danger-p: #F43F5E;      /* 경고/삭제 버튼 색상 (빨강) */
+            --border-c: #a5cee9;      /* 테두리 색상 (연한 파랑) */
+            --navy-main: #1E293B;     /* 네이비 메인 색상 */
+            --navy-hover: #0F172A;    /* 네이비 마우스 오버 색상 */
+        }
         
-        header { background: var(--header-w); height: 100px; display: flex; justify-content: space-between; align-items: center; padding: 0 60px; border-bottom: 1px solid var(--border-c); }
-        .header-left { display: flex; align-items: center; gap: 30px; }
-        .greeting { font-size: 20px; font-weight: 600; background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%); padding: 11px 28px; border-radius: 30px; border: 1px solid rgba(226, 232, 240, 0.7); display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); animation: popIn 0.8s ease-out; }
-        .btn-home-circle { width: 45px; height: 45px; border: 2px solid var(--primary-b); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: 0.3s; }
-        .btn-home-circle:hover { transform: scale(1.1); box-shadow: 0 4px 10px rgba(132, 177, 236, 0.3); }
+        /* [2] 기본 페이지 레이아웃 설정 */
+        body { 
+            margin: 0;                           /* 기본 여백 제거 */
+            color: var(--text-d);                /* 기본 글자색 적용 */
+            display: flex;                       /* 요소들을 유연하게 배치하기 위한 플렉스박스 사용 */
+            flex-direction: column;              /* 위에서 아래로(세로 방향) 요소 배치 */
+            min-height: 100vh;                   /* 화면 높이를 최소 화면 가득 채우도록 설정 */
+            font-family: 'Pretendard', sans-serif; /* 프리텐다드 폰트 적용 (없으면 기본 고딕) */
+            background: var(--bg-sub);           /* 배경색 적용 */
+        }
+        
+        /* [3] 상단 헤더 영역 스타일 */
+        header { 
+            background: var(--header-w);         /* 배경 흰색 */
+            height: 100px;                       /* 높이 고정 */
+            display: flex;                       /* 로고와 버튼을 가로로 배치 */
+            justify-content: space-between;      /* 양끝으로 밀어내어 배치 */
+            align-items: center;                 /* 세로 중앙 정렬 */
+            padding: 0 60px;                     /* 좌우 여백 */
+            border-bottom: 1px solid var(--border-c); /* 아래쪽 테두리 선 */
+        }
+        .header-left { display: flex; align-items: center; gap: 30px; } /* 로고와 인사말 사이 간격 30px */
+        
+        /* 인사말 뱃지 디자인 */
+        .greeting { 
+            font-size: 20px; font-weight: 600; 
+            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%); /* 은은한 그라데이션 배경 */
+            padding: 11px 28px; border-radius: 30px; /* 둥근 모서리 */
+            border: 1px solid rgba(226, 232, 240, 0.7); 
+            display: inline-flex; align-items: center; gap: 10px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02); /* 그림자 효과 */
+            animation: popIn 0.8s ease-out;      /* 등장할 때 팝업되는 애니메이션 적용 */
+        }
+        
+        /* 홈으로 가기 동그란 버튼 디자인 */
+        .btn-home-circle { 
+            width: 45px; height: 45px; border: 2px solid var(--primary-b); 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            text-decoration: none; transition: 0.3s; /* 마우스 오버 시 부드러운 전환 효과 */
+        }
+        .btn-home-circle:hover { transform: scale(1.1); box-shadow: 0 4px 10px rgba(132, 177, 236, 0.3); } /* 마우스 올리면 커짐 */
 
-        .container { display: flex; flex: 1; padding: 30px 40px; gap: 20px; }
+        /* [4] 메인 콘텐츠 레이아웃 (사이드바 + 본문) */
+        .container { display: flex; flex: 1; padding: 30px 40px; gap: 20px; } /* 남은 공간을 다 채우고 여백 설정 */
         .sidebar { background: #fff; width: 250px; border-radius: 24px; padding: 40px 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.03); }
-        .menu-btn { width: 100%; padding: 16px 18px; border: none; background: transparent; font-size: 18px; font-weight: 600; border-radius: 16px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.3s; }
-        .menu-btn:hover { background: #EFF6FF; color: var(--primary-b); transform: translateX(5px); }
-        .menu-btn.active { background: var(--primary-b); color: white; }
+        
+        /* 사이드바 메뉴 버튼 디자인 */
+        .menu-btn { 
+            width: 100%; padding: 16px 18px; border: none; background: transparent; 
+            font-size: 18px; font-weight: 600; border-radius: 16px; cursor: pointer; 
+            display: flex; align-items: center; gap: 12px; transition: 0.3s; 
+        }
+        .menu-btn:hover { background: #EFF6FF; color: var(--primary-b); transform: translateX(5px); } /* 마우스 올리면 우측으로 살짝 이동 */
+        .menu-btn.active { background: var(--primary-b); color: white; } /* 현재 선택된 메뉴의 디자인 */
+        
+        /* 우측 본문 영역 디자인 */
         .content { background: #fff; flex: 1; border-radius: 20px; border: 1px solid var(--border-c); padding: 50px; position: relative; }
 
-        #history-list { display: flex; flex-direction: column; gap: 4px; }
-        .history-card { background: #ffffff; border: 1px solid #eef2f6; border-radius: 12px; padding: 6px 20px; display: flex; align-items: center; gap: 15px; transition: 0.2s; min-height: 45px; text-align: left; }
-        .history-card:hover { transform: translateX(5px); background: #f8fafc; }
+        /* [5] 기록 리스트 및 카드 디자인 */
+        #history-list { display: flex; flex-direction: column; gap: 4px; } /* 기록들을 세로로 쌓음 */
+        .history-card { 
+            background: #ffffff; border: 1px solid #eef2f6; border-radius: 12px; 
+            padding: 6px 20px; display: flex; align-items: center; gap: 15px; 
+            transition: 0.2s; min-height: 45px; text-align: left; 
+        }
+        .history-card:hover { transform: translateX(5px); background: #f8fafc; } /* 카드에 마우스 올리면 이동 효과 */
+        
+        /* 톤(말투) 종류에 따른 뱃지 기본 디자인 */
         .tone-badge { min-width: 85px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 4px; }
         
-        .cat-business { background: #eff6ff; color: #3b82f6; border: 1px solid #dbeafe; }
+        /* 각 톤별 테마 색상 및 애니메이션 지정 */
+        .cat-business { background: #eff6ff; color: #3b82f6; border: 1px solid #dbeafe; } /* 업무체 (파랑) */
         .history-card.cat-business:hover .tone-badge { animation: sweep 0.6s ease; }
-        .cat-conflict { background: #fff1f2; color: #f43f5e; border: 1px solid #ffe4e6; }
+        .cat-conflict { background: #fff1f2; color: #f43f5e; border: 1px solid #ffe4e6; } /* 의견충돌 (빨강) */
         .history-card.cat-conflict:hover .tone-badge { animation: pulse-mini 0.6s infinite; }
-        .cat-feedback { background: #f0fdf4; color: #22c55e; border: 1px solid #dcfce7; }
+        .cat-feedback { background: #f0fdf4; color: #22c55e; border: 1px solid #dcfce7; } /* 피드백 (초록) */
         .history-card.cat-feedback:hover .tone-badge { animation: bounce-mini 0.5s ease; }
-        .cat-daily { background: #fefce8; color: #eab308; border: 1px solid #fef9c3; }
+        .cat-daily { background: #fefce8; color: #eab308; border: 1px solid #fef9c3; }    /* 일상체 (노랑) */
         .history-card.cat-daily:hover .tone-badge { animation: floating 1.5s infinite; }
-        .cat-apology { background: #faf5ff; color: #a855f7; border: 1px solid #f3e8ff; }
+        .cat-apology { background: #faf5ff; color: #a855f7; border: 1px solid #f3e8ff; }  /* 사과 (보라) */
         .history-card.cat-apology:hover .tone-badge { animation: bowing 0.6s ease; }
 
+        /* 기록 카드 내부 텍스트 및 삭제 버튼 디자인 */
         .history-info { flex: 1; display: flex; align-items: center; gap: 20px; font-size: 13.5px; overflow: hidden; }
-        .text-item { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; }
+        .text-item { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; } /* 글자가 길면 ... 처리 */
         .label-mini { font-weight: 800; color: #94a3b8; margin-right: 8px; font-size: 11px; }
         .delete-btn-mini { background: none; border: none; color: #cbd5e1; cursor: pointer; font-size: 18px; transition: 0.2s; }
-        .delete-btn-mini:hover { color: var(--danger-p); }
+        .delete-btn-mini:hover { color: var(--danger-p); } /* 삭제버튼 마우스 오버 시 빨간색 */
 
+        /* [6] 입력 폼 및 버튼 디자인 (비밀번호 변경 화면 등) */
         .input-group { display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
         .input-group label { width: 140px; text-align: right; margin-right: 15px; font-weight: bold; }
         .password-wrapper { position: relative; width: 240px; }
         .password-wrapper input { width: 100% !important; height: 48px; padding: 0 45px 0 15px; border: 1px solid #CBD5E1; border-radius: 12px; box-sizing: border-box; background: #fff; transition: 0.3s; }
-        .eye-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #94A3B8; font-size: 18px; user-select: none; z-index: 10; }
+        .eye-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #94A3B8; font-size: 18px; user-select: none; z-index: 10; } /* 눈 모양 아이콘 위치 */
 
+        /* 큼직한 메인 버튼 디자인 */
         .btn-large { width: 100%; max-width: 420px; height: 70px; border-radius: 20px; border: none; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; transition: 0.3s; margin: 0 auto; }
         .btn-blue { background: #84b1ec; color: white; }
         .btn-navy { background: var(--navy-main) !important; color: white !important; }
-        .btn-danger-outline { background: #FFF1F2; color: #F43F5E; border: 2px solid #F43F5E; }
+        .btn-danger-outline { background: #FFF1F2; color: #F43F5E; border: 2px solid #F43F5E; } /* 탈퇴 등 위험 작업 버튼 */
 
-        .view-section { display: none; text-align: center; }
-        .view-section.active { display: block; }
-        .view-section#default-view.active { display: flex; height: 100%; justify-content: center; align-items: center; background: url("{{ url_for('static', path='/logo.png') }}") no-repeat center / 400px; opacity: 0.15; }
+        /* [7] 뷰(화면) 전환 로직을 위한 클래스 (JS에서 제어) */
+        .view-section { display: none; text-align: center; } /* 기본적으로 모든 뷰를 숨김 */
+        .view-section.active { display: block; }             /* active 클래스가 붙은 뷰만 보여줌 */
+        .view-section#default-view.active { display: flex; height: 100%; justify-content: center; align-items: center; background: url("{{ url_for('static', path='/logo.png') }}") no-repeat center / 400px; opacity: 0.15; } /* 기본 화면은 로고 워터마크 표시 */
 
+        /* [8] 키프레임 애니메이션 정의 (위에서 배지에 적용한 애니메이션들) */
         @keyframes popIn { 0% { opacity: 0; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
         @keyframes sweep { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
         @keyframes pulse-mini { 0%, 100% { box-shadow: 0 0 0 0 rgba(244,63,94,0); } 70% { box-shadow: 0 0 0 6px rgba(244,63,94,0); } 0% { box-shadow: 0 0 0 0 rgba(244,63,94,0.4); } }
@@ -65,12 +133,13 @@
         @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
         @keyframes bowing { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
 
+        /* [9] 토글 스위치 (ON/OFF 버튼) 디자인 - 동의 여부 체크용 */
         .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: #89b3ed; }
-        input:checked + .slider:before { transform: translateX(24px); }
+        .switch input { opacity: 0; width: 0; height: 0; } /* 실제 체크박스는 숨김 */
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; } /* 둥근 배경 */
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; } /* 동그란 손잡이 */
+        input:checked + .slider { background-color: #89b3ed; } /* 체크되었을 때 파란색으로 변경 */
+        input:checked + .slider:before { transform: translateX(24px); } /* 손잡이를 오른쪽으로 이동 */
     </style>
 </head>
 
@@ -106,8 +175,8 @@
                 <div style="display: flex; flex-direction: column; gap: 20px; align-items: center;">
                     <button class="btn-large btn-blue" onclick="showView('edit-view')"><span class="material-symbols-outlined">person</span> 정보 수정</button>
                     <button class="btn-large btn-danger-outline" onclick="showView('withdraw-view')"><span class="material-symbols-outlined" style="color: #f59e0b;">report</span> 탈퇴</button>
-                    <div style="width: 100%; border-top: 1px solid #eee; margin: 20px 0;"></div>
-                    <div style="display: flex; width: 100%; max-width: 420px; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 15px 25px; border-radius: 20px; border: 1px solid #eee;">
+                    
+                    <div style="width: 100%; border-top: 1px solid #eee; margin: 20px 0;"></div> <div style="display: flex; width: 100%; max-width: 420px; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 15px 25px; border-radius: 20px; border: 1px solid #eee;">
                         <div style="text-align: left;">
                             <div style="font-weight: bold; font-size: 15px;">대화 기록 저장 동의</div>
                             <div style="font-size: 12px; color: #888;">AI 품질 향상을 위해 텍스트를 저장합니다.</div>
@@ -122,18 +191,21 @@
 
             <div id="edit-view" class="view-section">
                 <h2 style="font-size:26px; font-weight:800; margin-bottom:40px;">비밀번호 변경</h2>
+                
                 <div class="input-group"><label for="pw-old">기존 비밀번호</label>
                     <div style="display: flex; flex-direction: column;">
                         <div class="password-wrapper"><input type="password" id="pw-old"><span class="eye-icon" onclick="togglePassword('pw-old', this)">👁️</span></div>
                         <div id="pw-old-error" style="color: #EF4444; font-size: 12px; display: none; margin-top: 5px; text-align: left;">기존 비밀번호가 일치하지 않습니다.</div>
                     </div>
                 </div>
+                
                 <div class="input-group"><label for="pw-new">새 비밀번호</label>
                     <div style="display: flex; flex-direction: column;">
                         <div class="password-wrapper"><input type="password" id="pw-new" oninput="checkPasswordMatch()"><span class="eye-icon" onclick="togglePassword('pw-new', this)">👁️</span></div>
                         <div id="pw-length-error" style="color: #EF4444; font-size: 12px; display: none; margin-top: 5px; text-align: left;">비밀번호가 너무 쉽습니다! (8자 이상)</div>
                     </div>
                 </div>
+                
                 <div class="input-group"><label for="pw-confirm">새 비밀번호 확인</label>
                     <div style="display: flex; flex-direction: column;">
                         <div class="password-wrapper"><input type="password" id="pw-confirm" oninput="checkPasswordMatch()"><span class="eye-icon" onclick="togglePassword('pw-confirm', this)">👁️</span></div>
@@ -152,20 +224,26 @@
     </div>
 
     <script>
-        // ✅ 페이지 접속 시 브라우저 메모리에 현재 체크박스 상태를 각인시킵니다.
+        // ✅ 페이지가 처음 로드될 때 실행되는 함수 (초기 세팅)
         window.addEventListener('DOMContentLoaded', () => {
             const consentCheckbox = document.getElementById("consentCheckbox");
+            // 체크박스가 화면에 존재한다면 상태를 확인하여 브라우저 저장소(쿠키/로컬스토리지)에 동기화
             if (consentCheckbox) {
                 const agreed = consentCheckbox.checked;
-                localStorage.setItem("user_consent", agreed ? "true" : "false");
-                document.cookie = "user_consent=" + agreed + "; path=/; max-age=31536000";
+                localStorage.setItem("user_consent", agreed ? "true" : "false"); // 로컬 스토리지 저장
+                document.cookie = "user_consent=" + agreed + "; path=/; max-age=31536000"; // 1년짜리 쿠키로 저장
             }
         });
 
+        // ✅ 메뉴 이동 함수 (화면 전환)
+        // 파라미터(id)로 전달받은 화면만 보여주고 나머지는 숨김
         function showView(id) { 
+            // 모든 view-section 요소에서 active 클래스를 제거하여 숨김
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); 
+            // 선택된 화면(id)에만 active 클래스를 추가하여 표시
             document.getElementById(id).classList.add('active'); 
             
+            // 헤더의 인사말 텍스트 변경 로직 (기본 화면일 때와 서브 화면일 때 인사말 차이)
             const greeting = document.querySelector('.greeting');
             if (greeting) {
                 if (id === 'default-view') {
@@ -176,77 +254,137 @@
             }
         }
 
-        function togglePassword(id, icon) { const input = document.getElementById(id); input.type = "text"; icon.innerText = "👁️‍🗨️"; setTimeout(() => { input.type = "password"; icon.innerText = "👁️"; }, 1500); }
+        // ✅ 비밀번호 입력창 옆의 '눈' 아이콘 클릭 시 비밀번호를 1.5초간 보여주는 함수
+        function togglePassword(id, icon) { 
+            const input = document.getElementById(id); 
+            input.type = "text"; // input 타입을 text로 바꿔서 비밀번호 노출
+            icon.innerText = "👁️‍🗨️"; 
+            setTimeout(() => { 
+                input.type = "password"; // 1.5초 뒤에 다시 가림
+                icon.innerText = "👁️"; 
+            }, 1500); 
+        }
 
+        // ✅ 비밀번호 변경 시 실시간으로 글자 수와 일치 여부를 검사하는 함수
         function checkPasswordMatch() {
             const pwNew = document.getElementById('pw-new').value, pwConfirm = document.getElementById('pw-confirm').value;
             const lengthError = document.getElementById('pw-length-error'), matchError = document.getElementById('pw-match-error');
+            
+            // 새 비밀번호가 입력되었는데 8자 미만이면 길이 오류 메시지 표시
             if (lengthError) lengthError.style.display = (pwNew.length > 0 && pwNew.length < 8) ? 'block' : 'none';
+            // 새 비밀번호와 확인용 비밀번호가 다르면 불일치 오류 메시지 표시
             if (matchError) matchError.style.display = (pwConfirm.length > 0 && pwNew !== pwConfirm) ? 'block' : 'none';
         }
 
+        // ✅ 비밀번호 변경 버튼 클릭 시 서버로 데이터 전송하는 함수
         function submitPasswordChange() {
+            // 각 입력값과 에러 메시지 요소들을 가져옴
             const pwOld = document.getElementById('pw-old')?.value, pwNew = document.getElementById('pw-new')?.value, pwConfirm = document.getElementById('pw-confirm')?.value;
             const oldError = document.getElementById('pw-old-error'), lengthError = document.getElementById('pw-length-error'), matchError = document.getElementById('pw-match-error');
             
+            // 검사 시작 전 기존 에러 메시지들을 모두 숨김 처리
             [oldError, lengthError, matchError].forEach(el => { if(el) el.style.display = 'none'; });
 
+            // 입력값이 비어있는 경우 경고창 띄우고 중단
             if (!pwOld || !pwNew) return alert(pwOld ? "새 비밀번호를 입력해주세요." : "기존 비밀번호를 입력해주세요.");
+            // 조건 미충족 시 해당 에러 메시지 노출 후 중단
             if (pwNew.length < 8) return lengthError && (lengthError.style.display = 'block');
             if (pwNew !== pwConfirm) return matchError && (matchError.style.display = 'block');
 
-            fetch('/api/update-password', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ current_password: pwOld, new_password: pwNew }) })
+            // Fetch API를 이용해 백엔드 서버(/api/update-password)로 변경 요청 전송
+            fetch('/api/update-password', { 
+                method: 'PUT', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify({ current_password: pwOld, new_password: pwNew }) 
+            })
             .then(res => res.json().then(data => ({ ok: res.ok, data })))
             .then(res => {
+                // 성공 시 알림 후 페이지 새로고침
                 if (res.ok) { alert("비밀번호가 변경되었습니다."); location.reload(); } 
+                // 실패(비밀번호 틀림 등) 시 에러 메시지 노출
                 else if (oldError) { oldError.innerText = res.data.message || "기존 비밀번호가 일치하지 않습니다."; oldError.style.display = 'block'; document.getElementById('pw-old').focus(); }
-            }).catch(() => alert("서버 통신 장애. 아이피/포트를 확인하세요."));
+            }).catch(() => alert("서버 통신 장애. 아이피/포트를 확인하세요.")); // 서버가 죽었을 때 예외처리
         }
 
-        let allHistoryData = [], currentPage = 1; const itemsPerPage = 10;
+        // ✅ 교정 기록 페이징(나누어 보기)을 위한 전역 변수 설정
+        let allHistoryData = [], currentPage = 1; 
+        const itemsPerPage = 10; // 한 페이지당 10개씩 보여줌
         
+        // ✅ 서버에서 사용자의 교정 기록을 전부 가져오는 함수
         function loadHistory() {
             fetch('/api/history').then(res => res.json()).then(data => {
+                // 가져온 데이터를 최신순(id 기준 내림차순)으로 정렬하여 변수에 저장
                 allHistoryData = (data.history || []).sort((a, b) => (b.corr_idx || b.id || 0) - (a.corr_idx || a.id || 0));
-                renderHistoryPage(1);
+                renderHistoryPage(1); // 1페이지 화면 그리기 실행
             });
         }
 
+        // ✅ 선택된 페이지(page) 번호에 맞게 기록 카드들을 그려주는 함수
         function renderHistoryPage(page) {
-            currentPage = page; const list = document.getElementById('history-list'); list.innerHTML = '';
+            currentPage = page; 
+            const list = document.getElementById('history-list'); 
+            list.innerHTML = ''; // 기존 리스트 초기화
+            
+            // 전체 데이터 중 현재 페이지에 해당하는 10개만 잘라서(slice) 반복문 실행
             allHistoryData.slice((page-1)*itemsPerPage, page*itemsPerPage).forEach(item => {
-                const orig = item.original || item.upload_text || '내용 없음', corr = item.corrected || item.corr_text || '내용 없음', tone = item.tone_type || item.context_type || '일상', idx = item.corr_idx || item.id;
-                let icon = 'sentiment_satisfied', cat = 'cat-daily';
-                if(tone.includes('업무')) { icon='work'; cat='cat-business'; } else if(tone.includes('의견') || tone.includes('충돌')) { icon='bolt'; cat='cat-conflict'; } else if(tone.includes('피드백')) { icon='edit_note'; cat='cat-feedback'; } else if(tone.includes('사과')) { icon='volunteer_activism'; cat='cat-apology'; }
+                // 원문과 교정문, 톤 타입 등 데이터 추출 (이전/이후 API 버전 호환성 고려)
+                const orig = item.original || item.upload_text || '내용 없음', 
+                      corr = item.corrected || item.corr_text || '내용 없음', 
+                      tone = item.tone_type || item.context_type || '일상', 
+                      idx = item.corr_idx || item.id;
                 
+                // 톤(tone)의 종류에 따라 아이콘과 색상 클래스를 분기 처리
+                let icon = 'sentiment_satisfied', cat = 'cat-daily';
+                if(tone.includes('업무')) { icon='work'; cat='cat-business'; } 
+                else if(tone.includes('의견') || tone.includes('충돌')) { icon='bolt'; cat='cat-conflict'; } 
+                else if(tone.includes('피드백')) { icon='edit_note'; cat='cat-feedback'; } 
+                else if(tone.includes('사과')) { icon='volunteer_activism'; cat='cat-apology'; }
+                
+                // HTML 요소를 생성하여 리스트에 추가 (템플릿 리터럴 백틱 사용)
                 const card = document.createElement('div'); card.className = `history-card ${cat}`;
                 card.innerHTML = `<div class="tone-badge"><span class="material-symbols-outlined" style="font-size:16px;">${icon}</span>${tone}</div><div class="history-info"><div class="text-item" title="${orig}"><span class="label-mini">원문</span>${orig}</div><div class="text-item" title="${corr}"><span class="label-mini" style="color:#3b82f6;">교정</span><strong>${corr}</strong></div></div><button class="delete-btn-mini" onclick="deleteHistoryItem(${idx})">✕</button>`;
                 list.appendChild(card);
             });
-            renderPagination();
+            renderPagination(); // 하단에 1, 2, 3... 페이지 버튼 다시 그리기
         }
 
+        // ✅ 하단 페이지 번호 버튼(1, 2, 3...)을 생성하는 함수
         function renderPagination() {
-            const container = document.getElementById('pagination-container'), total = Math.ceil(allHistoryData.length / itemsPerPage);
-            container.innerHTML = ''; if (total <= 1) return;
+            const container = document.getElementById('pagination-container'), 
+                  total = Math.ceil(allHistoryData.length / itemsPerPage); // 총 필요한 페이지 수 계산
+            
+            container.innerHTML = ''; 
+            if (total <= 1) return; // 1페이지밖에 없으면 버튼 안 만듦
+            
+            // 페이지 수만큼 반복하며 버튼 생성
             for(let i=1; i<=total; i++) {
                 const btn = document.createElement('button'); btn.innerText = i;
+                // 현재 선택된 페이지는 파란색, 나머지는 회색으로 스타일 적용
                 btn.style.cssText = `border:none; border-radius:8px; padding:8px 14px; cursor:pointer; font-weight:bold; margin:0 4px; background:${i===currentPage?'#84b1ec':'#F4F7FA'}; color:${i===currentPage?'white':'#64748B'}; transition:0.2s;`;
-                btn.onclick = () => renderHistoryPage(i); container.appendChild(btn);
+                btn.onclick = () => renderHistoryPage(i); // 버튼 클릭 시 해당 페이지로 이동
+                container.appendChild(btn);
             }
         }
 
-        function deleteHistoryItem(id) { if(confirm("삭제하시겠습니까?")) fetch(`/api/history/${id}`, { method: 'DELETE' }).then(res => res.json()).then(data => { if(data.status==='success') loadHistory(); }); }
+        // ✅ ✕ 버튼 클릭 시 특정 기록을 삭제하는 함수
+        function deleteHistoryItem(id) { 
+            if(confirm("삭제하시겠습니까?")) 
+                // 서버에 DELETE 요청 전송
+                fetch(`/api/history/${id}`, { method: 'DELETE' }).then(res => res.json()).then(data => { 
+                    if(data.status==='success') loadHistory(); // 성공하면 기록 리스트 새로고침
+                }); 
+        }
         
+        // ✅ 대화 기록 저장 동의 체크박스(스위치) 클릭 시 실행되는 함수
         function updateConsent() {
-            // 1. 체크박스 상태 가져오기
+            // 1. 체크박스 현재 상태(true/false) 가져오기
             const agreed = document.getElementById("consentCheckbox").checked;
 
-            // 2. 브라우저 메모리(localStorage)와 쿠키에 동시 업데이트
+            // 2. 브라우저 메모리(localStorage)와 쿠키에 동시 업데이트하여 저장
             localStorage.setItem("user_consent", agreed ? "true" : "false");
             document.cookie = "user_consent=" + agreed + "; path=/; max-age=31536000";
 
-            // 3. 백엔드(DB) 서버에 저장 요청
+            // 3. 백엔드(DB) 서버에 동의 상태 저장 요청 전송
             fetch("/api/update-consent", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -257,27 +395,38 @@
                 }
             });
 
-            // 4. 스캐너 프로그램에 실시간으로 신호 전달
+            // 4. [중요] 내 컴퓨터에 깔려있는 로컬 파이썬 스캐너 프로그램(exe)에 소켓 통신으로 즉시 신호 전달
             try {
+                // 파이썬 스캐너가 열고 있는 8765 포트로 웹소켓 연결
                 const socket = new WebSocket('ws://127.0.0.1:8765');
                 socket.onopen = function() {
+                    // 연결 성공 시, 변경된 동의 상태 데이터를 보냄
                     socket.send(JSON.stringify({ 
                         command: "UPDATE_CONSENT", 
                         consent: agreed 
                     }));
                     
-                    // ✅ [중요] 스캐너가 신호를 확실히 받을 수 있도록 0.5초 대기 후 종료!
+                    // ✅ [중요] 스캐너가 신호를 확실히 처리할 수 있도록 0.5초 대기 후 소켓을 닫음
                     setTimeout(() => {
                         socket.close();
                     }, 500);
                 };
             } catch(e) {
-                console.log("스캐너가 현재 꺼져있습니다. (알림 전달 생략)");
+                console.log("스캐너가 현재 꺼져있습니다. (알림 전달 생략)"); // 스캐너 프로그램이 안 켜져있을 경우 에러 방지
             }
         }
         
-        function confirmWithdraw() { if(confirm("정말 탈퇴하시겠습니까? 복구할 수 없습니다.")) fetch('/api/delete-account', { method: 'DELETE' }).then(res => res.json()).then(data => { if(data.status==='success') window.location.href="/"; }); }
+        // ✅ 회원 탈퇴 버튼 클릭 시 실행되는 함수
+        function confirmWithdraw() { 
+            // 위험한 작업이므로 다시 한번 확인
+            if(confirm("정말 탈퇴하시겠습니까? 복구할 수 없습니다.")) 
+                // 서버에 계정 삭제 요청
+                fetch('/api/delete-account', { method: 'DELETE' }).then(res => res.json()).then(data => { 
+                    if(data.status==='success') window.location.href="/"; // 성공 시 메인 홈페이지로 튕겨냄
+                }); 
+        }
 
+        // ✅ 페이지의 모든 요소가 완전히 로드되면 기록을 불러옴
         window.onload = loadHistory;
     </script>
 </body>
