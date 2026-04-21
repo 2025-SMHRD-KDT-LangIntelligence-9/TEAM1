@@ -4,64 +4,118 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ToneGuard - 로그인 및 회원가입</title>
+    
     <style>
-        body { font-family: 'Pretendard', '맑은 고딕', sans-serif; background: #F4F7FA; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #2C3E50; }
-        .auth-container { background: #FFFFFF; width: 400px; padding: 45px 40px; border-radius: 24px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.04); border: 1px solid #E2E8F0; }
-        .logo-img { display: block; margin: 0 auto 30px auto; height: 140px; width: auto; }
-        .input-group { margin-bottom: 18px; position: relative; }
-        .input-group label { display: block; font-size: 13px; font-weight: 800; color: #64748B; margin-bottom: 6px; }
-        .input-group input { width: 100%; padding: 14px; border: 1px solid #CBD5E1; border-radius: 12px; box-sizing: border-box; font-size: 14px; transition: all 0.2s ease; }
+        /* [1] 페이지 기본 전체 배경 및 폰트 설정 */
+        body { 
+            font-family: 'Pretendard', '맑은 고딕', sans-serif; /* 기본 폰트 설정 */
+            background: #F4F7FA; /* 연한 회파랑 배경색 */
+            margin: 0; /* 기본 여백 제거 */
+            display: flex; justify-content: center; align-items: center; min-height: 100vh; /* 화면의 정중앙에 폼을 배치하기 위한 Flexbox 설정 */
+            color: #2C3E50; /* 기본 글자색 (진한 회색/네이비) */
+        }
+        
+        /* [2] 로그인/회원가입 폼을 감싸는 메인 하얀색 박스 디자인 */
+        .auth-container { 
+            background: #FFFFFF; width: 400px; padding: 45px 40px; 
+            border-radius: 24px; /* 둥근 모서리 */
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.04); /* 부드러운 그림자 효과 */
+            border: 1px solid #E2E8F0; /* 얇은 테두리 */
+        }
+        
+        /* [3] 상단 톤가드 로고 이미지 설정 */
+        .logo-img { display: block; margin: 0 auto 30px auto; height: 140px; width: auto; } /* 중앙 정렬 및 높이 지정 */
+        
+        /* [4] 입력창(Input) 관련 묶음 디자인 */
+        .input-group { margin-bottom: 18px; position: relative; } /* 각 입력란 사이의 간격 및 아이콘 배치를 위한 기준점 설정 */
+        .input-group label { display: block; font-size: 13px; font-weight: 800; color: #64748B; margin-bottom: 6px; } /* 입력창 제목(예: 이메일, 비밀번호) */
+        .input-group input { 
+            width: 100%; padding: 14px; border: 1px solid #CBD5E1; 
+            border-radius: 12px; box-sizing: border-box; font-size: 14px; transition: all 0.2s ease; 
+        }
+        /* 입력창을 클릭(포커스)했을 때 파란색 테두리와 은은한 빛(그림자) 효과 */
         .input-group input:focus { outline: none; border-color: #84b1ec; box-shadow: 0 0 0 3px rgba(132, 177, 236, 0.15); }
+        
+        /* [5] 비밀번호 보기(눈 모양) 아이콘 디자인 */
         .eye-icon { position: absolute; right: 15px; top: 36px; cursor: pointer; color: #94A3B8; font-size: 16px; user-select: none; }
-        .eye-icon:hover { color: #3B82F6; }
-        .btn-submit { width: 100%; padding: 15px; background: #1E293B; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 800; cursor: pointer; transition: all 0.2s ease; margin-top: 15px; }
+        .eye-icon:hover { color: #3B82F6; } /* 마우스 올렸을 때 색상 변경 */
+        
+        /* [6] 로그인 및 가입 완료 버튼 디자인 */
+        .btn-submit { 
+            width: 100%; padding: 15px; background: #1E293B; color: white; 
+            border: none; border-radius: 12px; font-size: 16px; font-weight: 800; 
+            cursor: pointer; transition: all 0.2s ease; margin-top: 15px; 
+        }
+        /* 버튼 활성화 상태에서 마우스 올렸을 때 살짝 위로 뜨는 효과 */
         .btn-submit:hover:not(:disabled) { background: #0F172A; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(30, 41, 59, 0.15); }
+        /* 버튼 비활성화 상태(예: 비밀번호 조건 불충족 시) 회색 처리 */
         .btn-submit:disabled { background: #CBD5E1; cursor: not-allowed; transform: none; box-shadow: none; }
+        
+        /* [7] 화면 전환 텍스트 링크 (예: "아직 계정이 없으신가요? 회원가입") */
         .text-link { display: block; text-align: center; margin-top: 25px; color: #84b1ec; font-size: 14px; font-weight: 800; cursor: pointer; text-decoration: none; transition: 0.2s; }
         .text-link:hover { color: #3B82F6; }
-        .view-section { display: none; opacity: 0; transform: translateY(10px); transition: all 0.4s ease; }
-        .view-section.active { display: block; opacity: 1; transform: translateY(0); }
+        
+        /* [8] 로그인 화면과 회원가입 화면 전환 애니메이션 처리 */
+        .view-section { display: none; opacity: 0; transform: translateY(10px); transition: all 0.4s ease; } /* 기본적으로 숨김, 아래로 살짝 내려가 있음 */
+        .view-section.active { display: block; opacity: 1; transform: translateY(0); } /* active 클래스가 붙으면 서서히 나타나며 위로 올라옴 */
+        
+        /* [9] "이메일 기억하기" 체크박스 영역 디자인 */
         .remember-group { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 13px; color: #64748B; }
         .remember-group input { width: 16px; height: 16px; cursor: pointer; }
     </style>
 </head>
+
 <body onload="initLoginPage()">
     <div class="auth-container">
         <img src="{{ url_for('static', path='/logo2.png') }}" alt="ToneGuard Logo" class="logo-img">
         
         <div id="login-view" class="view-section active">
             <form action="/login_process" method="POST" onsubmit="handleLoginSubmit()">
-                <div class="input-group"><label>이메일</label><input type="email" id="login_email" name="email" placeholder="user@example.com" required></div>
                 <div class="input-group">
-                    <label>비밀번호</label><input type="password" id="login_pw" name="password" placeholder="비밀번호 입력" required>
+                    <label>이메일</label>
+                    <input type="email" id="login_email" name="email" placeholder="user@example.com" required>
+                </div>
+                <div class="input-group">
+                    <label>비밀번호</label>
+                    <input type="password" id="login_pw" name="password" placeholder="비밀번호 입력" required>
                     <span class="eye-icon" onclick="togglePasswordVis('login_pw', this)">👁️</span>
                 </div>
-                <div class="remember-group"><input type="checkbox" id="remember_me"><label for="remember_me" style="cursor: pointer;">이메일 기억하기</label></div>
+                <div class="remember-group">
+                    <input type="checkbox" id="remember_me">
+                    <label for="remember_me" style="cursor: pointer;">이메일 기억하기</label>
+                </div>
                 <button type="submit" class="btn-submit">로그인</button>
             </form>
+            
             <div class="text-link" onclick="toggleView('register-view')">아직 계정이 없으신가요? 회원가입</div>
             <a href="/" class="text-link" style="color: #94A3B8; margin-top: 10px;">메인 화면으로 돌아가기</a>
         </div>
 
         <div id="register-view" class="view-section">
             <h2 style="text-align: center; font-size: 20px; margin-bottom: 25px; color:#1E293B;">회원가입</h2>
+            
             <form action="/register_process" method="POST">
                 <div class="input-group">
-                    <label>이메일</label><input type="email" id="reg_email" name="email" placeholder="user@example.com" required onblur="checkEmailDuplicate()">
+                    <label>이메일</label>
+                    <input type="email" id="reg_email" name="email" placeholder="user@example.com" required onblur="checkEmailDuplicate()">
                     <div id="email-error-msg" style="display: none; font-size: 12px; font-weight: bold; margin-top: 5px; padding-left: 5px;"></div>
                 </div>
                 <div class="input-group">
-                    <label>비밀번호</label><input type="password" id="reg_pw" name="password" placeholder="영문, 숫자, 특수문자 혼합 8자 이상" required oninput="checkPasswordStrength()">
+                    <label>비밀번호</label>
+                    <input type="password" id="reg_pw" name="password" placeholder="영문, 숫자, 특수문자 혼합 8자 이상" required oninput="checkPasswordStrength()">
                     <span class="eye-icon" onclick="togglePasswordVis('reg_pw', this)">👁️</span>
                     <div id="pw-strength-msg" style="display: none; font-size: 12px; font-weight: bold; margin-top: 5px; padding-left: 5px;"></div>
                 </div>
                 <div class="input-group"><label>이름</label><input type="text" name="name" placeholder="홍길동" required></div>
+                
                 <div style="display: flex; gap: 10px;">
                     <div class="input-group" style="flex: 1;"><label>부서</label><input type="text" name="dept"></div>
                     <div class="input-group" style="flex: 1;"><label>직급</label><input type="text" name="job"></div>
                 </div>
+                
                 <button type="submit" id="btn_register" class="btn-submit" style="margin-top: 20px;">가입 완료하기</button>
             </form>
+            
             <div style="display: flex; gap: 10px; justify-content: center; margin-top: 25px;">
                 <button type="button" onclick="toggleView('login-view')" style="flex: 1; padding: 12px; border: 1px solid #CBD5E1; background: white; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.2s;">이전</button>
                 <button type="button" onclick="window.location.href='/'" style="flex: 1; padding: 12px; border: none; background: #E2E8F0; border-radius: 12px; color: #475569; font-weight: bold; cursor: pointer; transition: 0.2s;">메인</button>
@@ -70,52 +124,112 @@
     </div>
 
     <script>
+        // ✅ 페이지 진입 시 실행: 이메일 기억하기 기능 또는 주소창으로 전달된 에러값 처리
         function initLoginPage() {
-            const el = document.getElementById("login_email"), chk = document.getElementById("remember_me"), urlParams = new URLSearchParams(window.location.search).get('email');
-            if (urlParams) { el.value = urlParams; chk.checked = false; window.history.replaceState({}, document.title, "/login"); return; }
+            const el = document.getElementById("login_email"), chk = document.getElementById("remember_me");
+            // 주소창(URL)에 ?email=xxx 값이 있으면 가져옴 (보통 로그인 실패 시 이전 이메일을 다시 채워주기 위함)
+            const urlParams = new URLSearchParams(window.location.search).get('email');
+            
+            if (urlParams) { 
+                el.value = urlParams; // 주소창의 이메일을 입력창에 넣음
+                chk.checked = false; 
+                // 주소창의 꼬리표(?email=...)를 지워서 깔끔하게 만듦
+                window.history.replaceState({}, document.title, "/login"); 
+                return; 
+            }
+            
+            // 브라우저 로컬 저장소에 기억해둔 이메일이 있는지 확인
             const saved = localStorage.getItem("remembered_email");
-            if (saved) { el.value = saved; chk.checked = true; }
+            if (saved) { 
+                el.value = saved; // 저장된 이메일을 폼에 채워넣음
+                chk.checked = true; // 체크박스 체크 상태 유지
+            }
         }
 
+        // ✅ 로그인 버튼을 눌러 제출될 때 실행: 이메일 저장 여부 결정
         function handleLoginSubmit() {
             const email = document.getElementById("login_email").value, chk = document.getElementById("remember_me").checked;
+            // 체크박스가 체크되어 있으면 이메일을 로컬 저장소에 저장하고, 아니면 삭제함
             chk ? localStorage.setItem("remembered_email", email) : localStorage.removeItem("remembered_email");
         }
 
+        // ✅ 로그인 화면 <-> 회원가입 화면 간의 부드러운 전환 효과
         function toggleView(viewId) {
+            // 1. 현재 켜져 있는 화면을 서서히 투명하게 만듦 (fade out)
             document.querySelectorAll('.view-section').forEach(el => {
-                el.classList.remove('active'); setTimeout(() => el.style.display = 'none', 400); 
+                el.classList.remove('active'); 
+                setTimeout(() => el.style.display = 'none', 400); // 0.4초 뒤에 완전히 숨김 처리
             });
+            
+            // 2. 띄우고자 하는 목표 화면을 서서히 나타나게 만듦 (fade in)
             const target = document.getElementById(viewId);
-            setTimeout(() => { target.style.display = 'block'; setTimeout(() => target.classList.add('active'), 10); }, 400);
+            setTimeout(() => { 
+                target.style.display = 'block'; 
+                setTimeout(() => target.classList.add('active'), 10); 
+            }, 400); // 앞선 화면이 꺼지는 0.4초를 기다린 후 켬
         }
 
+        // ✅ 회원가입 폼 - 이메일 입력란에서 마우스가 벗어나면 실행: 이메일 중복 확인
         function checkEmailDuplicate() {
             const email = document.getElementById("reg_email").value, msgBox = document.getElementById("email-error-msg");
+            
+            // 이메일 칸이 비었거나 '@' 기호가 없으면 형식 오류이므로 검사 안 하고 메시지 창 숨김
             if (!email || !email.includes("@")) return msgBox.style.display = "none";
+            
+            // 서버의 /api/check-email 로 중복 여부를 물어봄
             fetch(`/api/check-email?email=${email}`).then(r => r.json()).then(data => {
-                msgBox.style.display = "block";
+                msgBox.style.display = "block"; // 메시지 창 노출
+                // 서버가 사용 불가(false)라고 응답하면 빨간색 글씨, 사용 가능이면 초록색 글씨 적용
                 msgBox.style.color = data.available === false ? "#EF4444" : "#10B981";
                 msgBox.innerText = data.available === false ? "사용 중이거나 탈퇴한 이메일입니다." : "사용 가능한 이메일입니다!";
             });
         }
 
+        // ✅ 비밀번호 입력창 옆의 눈 모양 아이콘 클릭 시 비밀번호 노출/숨김 기능
         function togglePasswordVis(id, icon) {
             const input = document.getElementById(id);
             if (input.type === 'password') {
-                input.type = 'text'; icon.innerText = '👁️‍🗨️';
+                input.type = 'text'; // 글자가 보이게 전환
+                icon.innerText = '👁️‍🗨️'; // 아이콘 모양 변경
+                // 보안을 위해 1.5초(1500ms) 뒤에 자동으로 다시 가려짐
                 setTimeout(() => { input.type = 'password'; icon.innerText = '👁️'; }, 1500);
-            } else { input.type = 'password'; icon.innerText = '👁️'; }
+            } else { 
+                input.type = 'password'; icon.innerText = '👁️'; // 이미 보이고 있을 때 누르면 바로 가림
+            }
         }
 
+        // ✅ 회원가입 폼 - 비밀번호를 한 글자씩 칠 때마다 안전성 검사 실행
         function checkPasswordStrength() {
-            const pw = document.getElementById("reg_pw").value, msgBox = document.getElementById("pw-strength-msg"), btnReg = document.getElementById("btn_register");
+            const pw = document.getElementById("reg_pw").value, 
+                  msgBox = document.getElementById("pw-strength-msg"), 
+                  btnReg = document.getElementById("btn_register"); // 가입 완료 버튼
+            
+            // 아무것도 안 쳤으면 경고 끄기
             if (!pw) { msgBox.style.display = "none"; btnReg.disabled = false; return; }
             msgBox.style.display = "block";
-            const hL = /[a-zA-Z]/.test(pw), hN = /[0-9]/.test(pw), hS = /[^a-zA-Z0-9]/.test(pw), isLong = pw.length >= 8;
-            if (!isLong) { msgBox.style.color = "#EF4444"; msgBox.innerText = "비밀번호가 너무 짧습니다. (최소 8자)"; btnReg.disabled = true; }
-            else if (hL && hN && hS) { msgBox.style.color = "#10B981"; msgBox.innerText = "안전하고 강력한 비밀번호입니다!"; btnReg.disabled = false; }
-            else { msgBox.style.color = "#F59E0B"; msgBox.innerText = "영문, 숫자, 특수문자를 모두 섞으면 더 안전합니다."; btnReg.disabled = false; }
+            
+            // 정규식을 활용한 비밀번호 조건 검사
+            const hL = /[a-zA-Z]/.test(pw), // 영문자가 포함되어 있는지?
+                  hN = /[0-9]/.test(pw),      // 숫자가 포함되어 있는지?
+                  hS = /[^a-zA-Z0-9]/.test(pw), // 특수문자가 포함되어 있는지?
+                  isLong = pw.length >= 8;    // 8자리 이상인지?
+                  
+            // 조건에 따라 색상과 메시지를 변경하고, 기준 미달 시 '가입 버튼'을 강제로 막음(disabled)
+            if (!isLong) { 
+                msgBox.style.color = "#EF4444"; // 빨간색
+                msgBox.innerText = "비밀번호가 너무 짧습니다. (최소 8자)"; 
+                btnReg.disabled = true; // 가입버튼 잠금
+            }
+            else if (hL && hN && hS) { 
+                msgBox.style.color = "#10B981"; // 초록색 (최고 안전 등급)
+                msgBox.innerText = "안전하고 강력한 비밀번호입니다!"; 
+                btnReg.disabled = false; // 가입버튼 해제
+            }
+            else { 
+                msgBox.style.color = "#F59E0B"; // 노란색 (8자리는 넘었으나 조합이 부족함)
+                msgBox.innerText = "영문, 숫자, 특수문자를 모두 섞으면 더 안전합니다."; 
+                btnReg.disabled = false; // 일단 8자리 넘었으므로 가입버튼은 열어둠
+            }
         }
     </script>
 </body>
