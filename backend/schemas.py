@@ -70,3 +70,4 @@ class UserUpdate(BaseModel):
     job: Optional[str] = None
     current_password: Optional[str] = None  # 현재 비번 확인용
     new_password: Optional[str] = None      # 새 비번
+    consent: Optional[bool] = None

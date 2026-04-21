@@ -23,7 +23,7 @@ def get_vector(text: str) -> list:
         return_tensors='pt',
         max_length=128,
         truncation=True,
-        padding=True
+        padding=True    
     )
     with torch.no_grad():
         outputs = model(**inputs)
@@ -31,7 +31,7 @@ def get_vector(text: str) -> list:
 
 # 데이터 로드
 print("데이터 로딩 중...")
-df = pd.read_excel(r'C:\Users\smhrd\Desktop\backend\data\데이터파일 (5).xlsx')
+df = pd.read_excel(r'C:\Users\smhrd\Desktop\backend\data\데이터파일 (8).xlsx')
 print(f"원본 데이터 수: {len(df)}개")
 
 # original_text + corr_text 각각 따로 행으로 만들기

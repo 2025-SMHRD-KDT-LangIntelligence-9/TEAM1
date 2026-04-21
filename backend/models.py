@@ -3,6 +3,7 @@ from sqlalchemy.sql import func
 from pgvector.sqlalchemy import Vector
 from database import Base
 from sqlalchemy import ForeignKey
+from sqlalchemy import VARCHAR, Column, Integer, String, Float, Text, DateTime, Boolean
 
 class User(Base):
     __tablename__ = "users"
@@ -15,6 +16,7 @@ class User(Base):
     job = Column(String(50))
     profile_img = Column(String(255))
     joined_at = Column(DateTime(timezone=True), server_default=func.now())
+    consent = Column(Boolean, default=True, server_default='true')
 
 class Correction(Base):
     __tablename__ = "corrections"

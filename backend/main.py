@@ -182,7 +182,8 @@ def get_user(db: Session = Depends(get_db), user_id: int = Depends(get_current_u
             "dept": user.dept,
             "job": user.job,
             "profile_img": user.profile_img,
-            "joined_at": user.joined_at
+            "joined_at": user.joined_at,
+            "consent": user.consent
         }
     except HTTPException:
         raise
@@ -200,8 +201,8 @@ def update_user(request: UserUpdate, db: Session = Depends(get_db), user_id: int
         if request.name: user.name = request.name
         if request.dept: user.dept = request.dept
         if request.job: user.job = request.job
+        if request.consent is not None: user.consent = request.consent  # 추가
 
-        # 비밀번호 변경
         if request.new_password:
             if not request.current_password:
                 raise HTTPException(status_code=400, detail="현재 비밀번호를 입력해주세요")
@@ -211,11 +212,10 @@ def update_user(request: UserUpdate, db: Session = Depends(get_db), user_id: int
 
         db.commit()
         return {"message": "개인정보 수정 완료!"}
-
     except HTTPException:
         raise
     except Exception as e:
-        logger.exception(f"❌ /user PUT 에러")  # 스택 트레이스 자동 포함
+        logger.exception(f"❌ /user PUT 에러")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.delete("/user")
@@ -274,7 +274,7 @@ def delete_history(corr_idxs: list[int] = Query(...), db: Session = Depends(get_
     db.commit()
     return {"message": f"교정 기록 {len(records)}건 삭제 완료!"}
 
-@app.delete("/history")
+@app.delete("/history/all")
 def delete_all_history(db: Session = Depends(get_db), user_id: int = Depends(get_current_user)):
     deleted = db.query(Correction).filter(Correction.id == user_id).delete(synchronize_session=False)
     db.commit()
