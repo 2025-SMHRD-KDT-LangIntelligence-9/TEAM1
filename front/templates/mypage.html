@@ -1,68 +1,31 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
     <meta charset="UTF-8">
     <title>ToneGuard 마이페이지</title>
-
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <style>
-        /* [1] 전역 변수 및 기본 설정 */
-        :root {
-            --header-w: #FFFFFF; --bg-sub: #F4F7FA; --text-d: #1E293B;
-            --primary-b: #84b1ec; --danger-p: #F43F5E; --border-c: #a5cee9;
-            --navy-main: #1E293B; --navy-hover: #0F172A;
-        }
-
-        body {
-            margin: 0; color: var(--text-d); display: flex; flex-direction: column; min-height: 100vh;
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: var(--bg-sub);
-        }
-
-        /* [2] 헤더 & 사이드바 디자인 */
-        header {
-            background: var(--header-w); height: 100px; display: flex;
-            justify-content: space-between; align-items: center; padding: 0 60px;
-            border-bottom: 1px solid var(--border-c);
-        }
+        :root { --header-w: #FFFFFF; --bg-sub: #F4F7FA; --text-d: #1E293B; --primary-b: #84b1ec; --danger-p: #F43F5E; --border-c: #a5cee9; --navy-main: #1E293B; --navy-hover: #0F172A; }
+        body { margin: 0; color: var(--text-d); display: flex; flex-direction: column; min-height: 100vh; font-family: 'Pretendard', sans-serif; background: var(--bg-sub); }
+        
+        header { background: var(--header-w); height: 100px; display: flex; justify-content: space-between; align-items: center; padding: 0 60px; border-bottom: 1px solid var(--border-c); }
         .header-left { display: flex; align-items: center; gap: 30px; }
-        .greeting {
-            font-size: 20px; font-weight: 600; background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
-            padding: 11px 28px; border-radius: 30px; border: 1px solid rgba(226, 232, 240, 0.7);
-            display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
-            animation: popIn 0.8s ease-out;
-        }
-        .btn-home-circle {
-            width: 45px; height: 45px; border: 2px solid var(--primary-b); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; text-decoration: none; transition: 0.3s;
-        }
+        .greeting { font-size: 20px; font-weight: 600; background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%); padding: 11px 28px; border-radius: 30px; border: 1px solid rgba(226, 232, 240, 0.7); display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); animation: popIn 0.8s ease-out; }
+        .btn-home-circle { width: 45px; height: 45px; border: 2px solid var(--primary-b); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: 0.3s; }
         .btn-home-circle:hover { transform: scale(1.1); box-shadow: 0 4px 10px rgba(132, 177, 236, 0.3); }
 
         .container { display: flex; flex: 1; padding: 30px 40px; gap: 20px; }
-        .sidebar { background: #fff; width: 250px; border-radius: 24px; padding: 40px 15px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03); }
-        .menu-btn {
-            width: 100%; padding: 16px 18px; border: none; background: transparent;
-            font-size: 18px; font-weight: 600; border-radius: 16px; cursor: pointer;
-            display: flex; align-items: center; gap: 12px; transition: 0.3s;
-        }
+        .sidebar { background: #fff; width: 250px; border-radius: 24px; padding: 40px 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.03); }
+        .menu-btn { width: 100%; padding: 16px 18px; border: none; background: transparent; font-size: 18px; font-weight: 600; border-radius: 16px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.3s; }
         .menu-btn:hover { background: #EFF6FF; color: var(--primary-b); transform: translateX(5px); }
         .menu-btn.active { background: var(--primary-b); color: white; }
         .content { background: #fff; flex: 1; border-radius: 20px; border: 1px solid var(--border-c); padding: 50px; position: relative; }
 
-        /* [3] 교정 기록 리스트 디자인 (다이어트 버전) */
         #history-list { display: flex; flex-direction: column; gap: 4px; }
-        .history-card {
-            background: #ffffff; border: 1px solid #eef2f6; border-radius: 12px;
-            padding: 6px 20px; display: flex; align-items: center; gap: 15px;
-            transition: 0.2s; min-height: 45px; text-align: left;
-        }
+        .history-card { background: #ffffff; border: 1px solid #eef2f6; border-radius: 12px; padding: 6px 20px; display: flex; align-items: center; gap: 15px; transition: 0.2s; min-height: 45px; text-align: left; }
         .history-card:hover { transform: translateX(5px); background: #f8fafc; }
         .tone-badge { min-width: 85px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 4px; }
         
-        /* 카테고리별 컬러 및 애니메이션 */
         .cat-business { background: #eff6ff; color: #3b82f6; border: 1px solid #dbeafe; }
         .history-card.cat-business:hover .tone-badge { animation: sweep 0.6s ease; }
         .cat-conflict { background: #fff1f2; color: #f43f5e; border: 1px solid #ffe4e6; }
@@ -80,7 +43,6 @@
         .delete-btn-mini { background: none; border: none; color: #cbd5e1; cursor: pointer; font-size: 18px; transition: 0.2s; }
         .delete-btn-mini:hover { color: var(--danger-p); }
 
-        /* [4] 입력창 및 버튼 디자인 */
         .input-group { display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
         .input-group label { width: 140px; text-align: right; margin-right: 15px; font-weight: bold; }
         .password-wrapper { position: relative; width: 240px; }
@@ -94,17 +56,15 @@
 
         .view-section { display: none; text-align: center; }
         .view-section.active { display: block; }
-        #default-view.active { display: flex; height: 100%; justify-content: center; align-items: center; background: url("{{ url_for('static', path='/logo.png') }}") no-repeat center / 400px; opacity: 0.15; }
+        .view-section#default-view.active { display: flex; height: 100%; justify-content: center; align-items: center; background: url("{{ url_for('static', path='/logo.png') }}") no-repeat center / 400px; opacity: 0.15; }
 
-        /* [5] 애니메이션 */
         @keyframes popIn { 0% { opacity: 0; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
-        @keyframes sweep { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        @keyframes pulse-mini { 0% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(244, 63, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); } }
+        @keyframes sweep { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes pulse-mini { 0%, 100% { box-shadow: 0 0 0 0 rgba(244,63,94,0); } 70% { box-shadow: 0 0 0 6px rgba(244,63,94,0); } 0% { box-shadow: 0 0 0 0 rgba(244,63,94,0.4); } }
         @keyframes bounce-mini { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
         @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
-        @keyframes bowing { 0% { transform: translateY(0); } 50% { transform: translateY(3px); } 100% { transform: translateY(0); } }
+        @keyframes bowing { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
 
-        /* 토글 스위치 */
         .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
@@ -118,22 +78,15 @@
     <header>
         <div class="header-left">
             <img src="{{ url_for('static', path='/logo2.png') }}" alt="Logo" height="100">
-            <span class="greeting">
-                <span class="material-symbols-outlined" style="color: #f59e0b; font-size: 30px;">front_hand</span>
-                반갑습니다, <span style="color:var(--primary-b); font-weight:800;">{{ user_name }}</span>님!
-            </span>
+            <span class="greeting"><span class="material-symbols-outlined" style="color: #f59e0b; font-size: 30px;">front_hand</span> 반갑습니다, <span style="color:var(--primary-b); font-weight:800;">{{ user_name }}</span>님!</span>
         </div>
         <a href="/" class="btn-home-circle" title="메인으로 돌아가기"><span class="material-symbols-outlined">home</span></a>
     </header>
 
     <div class="container">
         <div class="sidebar">
-            <button class="menu-btn" onclick="showView('history-view'); loadHistory();">
-                <span class="material-symbols-outlined">description</span> 나의 교정 기록
-            </button>
-            <button class="menu-btn" onclick="showView('settings-view')">
-                <span class="material-symbols-outlined">manage_accounts</span> 설정 및 관리
-            </button>
+            <button class="menu-btn" onclick="showView('history-view'); loadHistory();"><span class="material-symbols-outlined">description</span> 나의 교정 기록</button>
+            <button class="menu-btn" onclick="showView('settings-view')"><span class="material-symbols-outlined">manage_accounts</span> 설정 및 관리</button>
         </div>
 
         <div class="content">
@@ -168,238 +121,162 @@
             </div>
 
             <div id="edit-view" class="view-section">
-    <h2 style="font-size:26px; font-weight:800; margin-bottom:40px;">비밀번호 변경</h2>
-    
-    <div class="input-group">
-        <label for="pw-old">기존 비밀번호</label>
-        <div style="display: flex; flex-direction: column;">
-            <div class="password-wrapper">
-                <input type="password" id="pw-old">
-                <span class="eye-icon" onclick="togglePassword('pw-old', this)">👁️</span>
+                <h2 style="font-size:26px; font-weight:800; margin-bottom:40px;">비밀번호 변경</h2>
+                <div class="input-group"><label for="pw-old">기존 비밀번호</label>
+                    <div style="display: flex; flex-direction: column;">
+                        <div class="password-wrapper"><input type="password" id="pw-old"><span class="eye-icon" onclick="togglePassword('pw-old', this)">👁️</span></div>
+                        <div id="pw-old-error" style="color: #EF4444; font-size: 12px; display: none; margin-top: 5px; text-align: left;">기존 비밀번호가 일치하지 않습니다.</div>
+                    </div>
+                </div>
+                <div class="input-group"><label for="pw-new">새 비밀번호</label>
+                    <div style="display: flex; flex-direction: column;">
+                        <div class="password-wrapper"><input type="password" id="pw-new" oninput="checkPasswordMatch()"><span class="eye-icon" onclick="togglePassword('pw-new', this)">👁️</span></div>
+                        <div id="pw-length-error" style="color: #EF4444; font-size: 12px; display: none; margin-top: 5px; text-align: left;">비밀번호가 너무 쉽습니다! (8자 이상)</div>
+                    </div>
+                </div>
+                <div class="input-group"><label for="pw-confirm">새 비밀번호 확인</label>
+                    <div style="display: flex; flex-direction: column;">
+                        <div class="password-wrapper"><input type="password" id="pw-confirm" oninput="checkPasswordMatch()"><span class="eye-icon" onclick="togglePassword('pw-confirm', this)">👁️</span></div>
+                        <div id="pw-match-error" style="color: #EF4444; font-size: 12px; display: none; margin-top: 5px; text-align: left;">새 비밀번호가 일치하지 않습니다.</div>
+                    </div>
+                </div>
+                <button class="btn-large btn-navy" style="margin-top: 30px;" onclick="submitPasswordChange()">변경 완료</button>
             </div>
-            <div id="pw-old-error" style="color: #EF4444; font-size: 12px; display: none; margin-top: 5px; text-align: left;">기존 비밀번호가 일치하지 않습니다.</div>
-        </div>
-    </div>
 
-    <div class="input-group">
-        <label for="pw-new">새 비밀번호</label>
-        <div style="display: flex; flex-direction: column;">
-            <div class="password-wrapper">
-                <input type="password" id="pw-new" oninput="checkPasswordMatch()">
-                <span class="eye-icon" onclick="togglePassword('pw-new', this)">👁️</span>
-            </div>
-            <div id="pw-length-error" style="color: #EF4444; font-size: 12px; display: none; margin-top: 5px; text-align: left;">비밀번호가 너무 쉽습니다! (8자 이상)</div>
-        </div>
-    </div>
-
-    <div class="input-group">
-        <label for="pw-confirm">새 비밀번호 확인</label>
-        <div style="display: flex; flex-direction: column;">
-            <div class="password-wrapper">
-                <input type="password" id="pw-confirm" oninput="checkPasswordMatch()">
-                <span class="eye-icon" onclick="togglePassword('pw-confirm', this)">👁️</span>
-            </div>
-            <div id="pw-match-error" style="color: #EF4444; font-size: 12px; display: none; margin-top: 5px; text-align: left;">새 비밀번호가 일치하지 않습니다.</div>
-        </div>
-    </div>
-
-    <button class="btn-large btn-navy" style="margin-top: 30px;" onclick="submitPasswordChange()">변경 완료</button>
-</div>
-<div id="withdraw-view" class="view-section">
+            <div id="withdraw-view" class="view-section">
                 <h2 style="color: var(--danger-p); margin-top: 50px;">회원 탈퇴</h2>
                 <p>탈퇴하시면 모든 데이터가 삭제되며 복구할 수 없습니다.<br>정말로 톤가드를 떠나시겠습니까?</p>
                 <button class="btn-large btn-danger-outline" style="margin-top: 40px;" onclick="confirmWithdraw()">탈퇴 확인</button>
             </div>
         </div>
+    </div>
+
     <script>
-        /* [1] 공통 UI 기능 */
-        function showView(viewId) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
+        // ✅ 페이지 접속 시 브라우저 메모리에 현재 체크박스 상태를 각인시킵니다.
+        window.addEventListener('DOMContentLoaded', () => {
+            const consentCheckbox = document.getElementById("consentCheckbox");
+            if (consentCheckbox) {
+                const agreed = consentCheckbox.checked;
+                localStorage.setItem("user_consent", agreed ? "true" : "false");
+                document.cookie = "user_consent=" + agreed + "; path=/; max-age=31536000";
+            }
+        });
+
+        function showView(id) { 
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); 
+            document.getElementById(id).classList.add('active'); 
+            
             const greeting = document.querySelector('.greeting');
-            if (greeting) greeting.innerText = "{{ user_name }}님";
+            if (greeting) {
+                if (id === 'default-view') {
+                    greeting.innerHTML = '<span class="material-symbols-outlined" style="color: #f59e0b; font-size: 30px;">front_hand</span> 반갑습니다, <span style="color:var(--primary-b); font-weight:800;">{{ user_name }}</span>님!';
+                } else {
+                    greeting.innerHTML = '<span style="color:var(--primary-b); font-weight:800;">{{ user_name }}</span>님';
+                }
+            }
         }
 
-        function togglePassword(inputId, icon) {
-            const input = document.getElementById(inputId);
-            input.type = "text"; icon.innerText = "👁️‍🗨️";
-            setTimeout(() => { input.type = "password"; icon.innerText = "👁️"; }, 1500);
-        }
+        function togglePassword(id, icon) { const input = document.getElementById(id); input.type = "text"; icon.innerText = "👁️‍🗨️"; setTimeout(() => { input.type = "password"; icon.innerText = "👁️"; }, 1500); }
 
-        /* [2] 비밀번호 변경 로직 (변수 이름표 완벽 일치!) */
         function checkPasswordMatch() {
-            const pwNew = document.getElementById('pw-new').value;
-            const pwConfirm = document.getElementById('pw-confirm').value;
-            const lengthError = document.getElementById('pw-length-error');
-            const matchError = document.getElementById('pw-match-error');
-
-            if (!lengthError || !matchError) return;
-
-            // 길이 검사
-            lengthError.style.display = (pwNew.length > 0 && pwNew.length < 8) ? 'block' : 'none';
-            // 일치 검사
-            matchError.style.display = (pwConfirm.length > 0 && pwNew !== pwConfirm) ? 'block' : 'none';
+            const pwNew = document.getElementById('pw-new').value, pwConfirm = document.getElementById('pw-confirm').value;
+            const lengthError = document.getElementById('pw-length-error'), matchError = document.getElementById('pw-match-error');
+            if (lengthError) lengthError.style.display = (pwNew.length > 0 && pwNew.length < 8) ? 'block' : 'none';
+            if (matchError) matchError.style.display = (pwConfirm.length > 0 && pwNew !== pwConfirm) ? 'block' : 'none';
         }
 
         function submitPasswordChange() {
-            // 1. 값 가져오기
-            const pwOld = document.getElementById('pw-old')?.value;
-            const pwNew = document.getElementById('pw-new')?.value;
-            const pwConfirm = document.getElementById('pw-confirm')?.value;
-
-            // 2. 에러 메시지 요소 가져오기
-            const oldError = document.getElementById('pw-old-error');
-            const lengthError = document.getElementById('pw-length-error');
-            const matchError = document.getElementById('pw-match-error');
-
-            // 3. 일단 모든 에러 문구를 숨깁니다.
-            if (oldError) oldError.style.display = 'none';
-            if (lengthError) lengthError.style.display = 'none';
-            if (matchError) matchError.style.display = 'none';
-
-            // 4. 입력값 검증 (이곳에서 걸리면 alert가 떠야 합니다)
-            if (!pwOld) { alert("기존 비밀번호를 입력해주세요."); return; }
-            if (!pwNew) { alert("새 비밀번호를 입력해주세요."); return; }
+            const pwOld = document.getElementById('pw-old')?.value, pwNew = document.getElementById('pw-new')?.value, pwConfirm = document.getElementById('pw-confirm')?.value;
+            const oldError = document.getElementById('pw-old-error'), lengthError = document.getElementById('pw-length-error'), matchError = document.getElementById('pw-match-error');
             
-            // 새 비번 길이 체크
-            if (pwNew.length < 8) {
-                if (lengthError) lengthError.style.display = 'block';
-                return;
-            }
-            
-            // 비번 일치 체크
-            if (pwNew !== pwConfirm) {
-                if (matchError) matchError.style.display = 'block';
-                return;
-            }
+            [oldError, lengthError, matchError].forEach(el => { if(el) el.style.display = 'none'; });
 
-            // 5. 서버에 요청 보내기 (아이피와 포트를 꼭 확인하세요!)
-            fetch('/api/update-password', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    current_password: pwOld, 
-                    new_password: pwNew 
-                })
-            })
+            if (!pwOld || !pwNew) return alert(pwOld ? "새 비밀번호를 입력해주세요." : "기존 비밀번호를 입력해주세요.");
+            if (pwNew.length < 8) return lengthError && (lengthError.style.display = 'block');
+            if (pwNew !== pwConfirm) return matchError && (matchError.style.display = 'block');
+
+            fetch('/api/update-password', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ current_password: pwOld, new_password: pwNew }) })
+            .then(res => res.json().then(data => ({ ok: res.ok, data })))
             .then(res => {
-                // 서버 응답이 오는지 확인용 로그
-                console.log("서버 응답 상태:", res.status);
-                return res.json().then(data => ({ ok: res.ok, data }));
-            })
-            .then(result => {
-                if (result.ok) {
-                    alert("비밀번호가 성공적으로 변경되었습니다.");
-                    location.reload();
-                } else {
-                    // 서버가 "기존 비번 틀림" 등의 메시지를 보낸 경우
-                    if (oldError) {
-                        oldError.innerText = result.data.message || "기존 비밀번호가 일치하지 않습니다.";
-                        oldError.style.display = 'block';
-                        document.getElementById('pw-old').focus();
-                    }
-                }
-            })
-            .catch(err => {
-                console.error("통신 장애 발생:", err);
-                alert("서버와 통신할 수 없습니다. 아이피와 포트를 확인해주세요.");
-            });
+                if (res.ok) { alert("비밀번호가 변경되었습니다."); location.reload(); } 
+                else if (oldError) { oldError.innerText = res.data.message || "기존 비밀번호가 일치하지 않습니다."; oldError.style.display = 'block'; document.getElementById('pw-old').focus(); }
+            }).catch(() => alert("서버 통신 장애. 아이피/포트를 확인하세요."));
         }
 
-        /* [3] 교정 기록 기능 (데이터 이름표 유연하게 매핑) */
-        let allHistoryData = [];
-        let currentPage = 1;
-        const itemsPerPage = 10;
-
-        /* [수정된 교정 기록 불러오기] 최신순 정렬 버전 */
+        let allHistoryData = [], currentPage = 1; const itemsPerPage = 10;
+        
         function loadHistory() {
-            fetch('/api/history')
-            .then(res => res.json())
-            .then(data => {
-                // 1. 데이터를 가져온 후, ID(corr_idx 또는 id)가 큰 순서대로 정렬합니다.
-                const historyArr = data.history || [];
-                
-                allHistoryData = historyArr.sort((a, b) => {
-                    // 숫자가 큰 것(최신)이 위로 오도록 b에서 a를 뺍니다.
-                    const idA = a.corr_idx || a.id || 0;
-                    const idB = b.corr_idx || b.id || 0;
-                    return idB - idA; 
-                });
-
-                // 2. 정렬된 데이터를 첫 페이지부터 보여줍니다.
+            fetch('/api/history').then(res => res.json()).then(data => {
+                allHistoryData = (data.history || []).sort((a, b) => (b.corr_idx || b.id || 0) - (a.corr_idx || a.id || 0));
                 renderHistoryPage(1);
             });
         }
 
         function renderHistoryPage(page) {
-            currentPage = page;
-            const list = document.getElementById('history-list');
-            list.innerHTML = '';
-            const items = allHistoryData.slice((page-1)*itemsPerPage, page*itemsPerPage);
-
-            items.forEach(item => {
-                const original = item.original || item.upload_text || '내용 없음';
-                const corrected = item.corrected || item.corr_text || '내용 없음';
-                const tone = item.tone_type || item.context_type || '일상';
-                const idx = item.corr_idx || item.id;
-
-                let icon = 'sentiment_satisfied'; let cat = 'cat-daily';
-                if(tone.includes('업무')) { icon='work'; cat='cat-business'; }
-                else if(tone.includes('의견') || tone.includes('충돌')) { icon='bolt'; cat='cat-conflict'; }
-                else if(tone.includes('피드백')) { icon='edit_note'; cat='cat-feedback'; }
-                else if(tone.includes('사과')) { icon='volunteer_activism'; cat='cat-apology'; }
-
-                const card = document.createElement('div');
-                card.className = `history-card ${cat}`;
-                card.innerHTML = `
-                    <div class="tone-badge"><span class="material-symbols-outlined" style="font-size:16px;">${icon}</span>${tone}</div>
-                    <div class="history-info">
-                        <div class="text-item" title="${original}"><span class="label-mini">원문</span>${original}</div>
-                        <div class="text-item" title="${corrected}"><span class="label-mini" style="color:#3b82f6;">교정</span><strong>${corrected}</strong></div>
-                    </div>
-                    <button class="delete-btn-mini" onclick="deleteHistoryItem(${idx})">✕</button>`;
+            currentPage = page; const list = document.getElementById('history-list'); list.innerHTML = '';
+            allHistoryData.slice((page-1)*itemsPerPage, page*itemsPerPage).forEach(item => {
+                const orig = item.original || item.upload_text || '내용 없음', corr = item.corrected || item.corr_text || '내용 없음', tone = item.tone_type || item.context_type || '일상', idx = item.corr_idx || item.id;
+                let icon = 'sentiment_satisfied', cat = 'cat-daily';
+                if(tone.includes('업무')) { icon='work'; cat='cat-business'; } else if(tone.includes('의견') || tone.includes('충돌')) { icon='bolt'; cat='cat-conflict'; } else if(tone.includes('피드백')) { icon='edit_note'; cat='cat-feedback'; } else if(tone.includes('사과')) { icon='volunteer_activism'; cat='cat-apology'; }
+                
+                const card = document.createElement('div'); card.className = `history-card ${cat}`;
+                card.innerHTML = `<div class="tone-badge"><span class="material-symbols-outlined" style="font-size:16px;">${icon}</span>${tone}</div><div class="history-info"><div class="text-item" title="${orig}"><span class="label-mini">원문</span>${orig}</div><div class="text-item" title="${corr}"><span class="label-mini" style="color:#3b82f6;">교정</span><strong>${corr}</strong></div></div><button class="delete-btn-mini" onclick="deleteHistoryItem(${idx})">✕</button>`;
                 list.appendChild(card);
             });
             renderPagination();
         }
 
         function renderPagination() {
-            const container = document.getElementById('pagination-container');
-            const total = Math.ceil(allHistoryData.length / itemsPerPage);
-            container.innerHTML = '';
-            if (total <= 1) return;
+            const container = document.getElementById('pagination-container'), total = Math.ceil(allHistoryData.length / itemsPerPage);
+            container.innerHTML = ''; if (total <= 1) return;
             for(let i=1; i<=total; i++) {
-                const btn = document.createElement('button');
-                btn.innerText = i;
-                btn.style.cssText = `border:none; border-radius:8px; padding:8px 14px; cursor:pointer; font-weight:bold; margin:0 4px; background:${i===currentPage?'#84b1ec':'#F4F7FA'}; color:${i===currentPage?'white':'#64748B'}; transition: 0.2s;`;
-                btn.onclick = () => renderHistoryPage(i);
-                container.appendChild(btn);
+                const btn = document.createElement('button'); btn.innerText = i;
+                btn.style.cssText = `border:none; border-radius:8px; padding:8px 14px; cursor:pointer; font-weight:bold; margin:0 4px; background:${i===currentPage?'#84b1ec':'#F4F7FA'}; color:${i===currentPage?'white':'#64748B'}; transition:0.2s;`;
+                btn.onclick = () => renderHistoryPage(i); container.appendChild(btn);
             }
         }
 
-        function deleteHistoryItem(id) {
-            if(confirm("이 기록을 삭제하시겠습니까?")) {
-                fetch(`/api/history/${id}`, { method: 'DELETE' })
-                .then(res => res.json()).then(data => { if(data.status==='success') loadHistory(); });
-            }
-        }
-
-        /* [4] 설정 및 계정 관리 */
+        function deleteHistoryItem(id) { if(confirm("삭제하시겠습니까?")) fetch(`/api/history/${id}`, { method: 'DELETE' }).then(res => res.json()).then(data => { if(data.status==='success') loadHistory(); }); }
+        
         function updateConsent() {
+            // 1. 체크박스 상태 가져오기
             const agreed = document.getElementById("consentCheckbox").checked;
+
+            // 2. 브라우저 메모리(localStorage)와 쿠키에 동시 업데이트
+            localStorage.setItem("user_consent", agreed ? "true" : "false");
+            document.cookie = "user_consent=" + agreed + "; path=/; max-age=31536000";
+
+            // 3. 백엔드(DB) 서버에 저장 요청
             fetch("/api/update-consent", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ consent: agreed })
+            }).then(response => {
+                if (!response.ok) {
+                    console.error("DB 저장에 실패했습니다. 백엔드를 확인해주세요.");
+                }
             });
-        }
 
-        function confirmWithdraw() {
-            if(confirm("정말 탈퇴하시겠습니까? 복구할 수 없습니다.")) {
-                fetch('/api/delete-account', { method: 'DELETE' })
-                .then(res => res.json()).then(data => { if(data.status==='success') window.location.href="/"; });
+            // 4. 스캐너 프로그램에 실시간으로 신호 전달
+            try {
+                const socket = new WebSocket('ws://127.0.0.1:8765');
+                socket.onopen = function() {
+                    socket.send(JSON.stringify({ 
+                        command: "UPDATE_CONSENT", 
+                        consent: agreed 
+                    }));
+                    
+                    // ✅ [중요] 스캐너가 신호를 확실히 받을 수 있도록 0.5초 대기 후 종료!
+                    setTimeout(() => {
+                        socket.close();
+                    }, 500);
+                };
+            } catch(e) {
+                console.log("스캐너가 현재 꺼져있습니다. (알림 전달 생략)");
             }
         }
+        
+        function confirmWithdraw() { if(confirm("정말 탈퇴하시겠습니까? 복구할 수 없습니다.")) fetch('/api/delete-account', { method: 'DELETE' }).then(res => res.json()).then(data => { if(data.status==='success') window.location.href="/"; }); }
 
         window.onload = loadHistory;
     </script>
